@@ -1,0 +1,17 @@
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.csproj.AssemblyReference.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.AssemblyInfoInputs.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.AssemblyInfo.cs
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Application.deps.json
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Application.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Application.pdb
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Domain.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Shared.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Domain.pdb
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\bin\Debug\net10.0\Facturacion.Shared.pdb
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturac.B9BCE53A.Up2Date
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\refint\Facturacion.Application.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\Facturacion.Application.pdb
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Application\obj\Debug\net10.0\ref\Facturacion.Application.dll

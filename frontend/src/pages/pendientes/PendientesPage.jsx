@@ -1,0 +1,341 @@
+import { useEffect, useState } from "react";
+import { obtenerClientes } from "../../services/clienteService";
+import { obtenerProductos } from "../../services/productoService";
+
+import { usePagination } from "../../hooks/usePagination";
+import Pagination from "../../components/Pagination";
+
+import {
+  obtenerPendientes,
+  crearPendiente,
+  obtenerPendiente,
+  agregarProductoPendiente,
+  eliminarProductoPendiente,
+  cancelarPendiente,
+} from "../../services/pendienteVentaService";
+import { generarFactura } from "../../services/facturaService";
+
+export default function PendientesPage() {
+  const [clientes, setClientes] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [pendientes, setPendientes] = useState([]);
+  const ESTADOS = ["TODOS", "ABIERTO", "FACTURADA", "CANCELADA"];
+
+  const [estadoFiltro, setEstadoFiltro] = useState("TODOS");
+
+  const [clienteId, setClienteId] = useState("");
+  const [pendienteId, setPendienteId] = useState(null);
+  const [pendiente, setPendiente] = useState(null);
+
+  const [productoId, setProductoId] = useState("");
+  const [cantidad, setCantidad] = useState(1);
+  const [descuento, setDescuento] = useState(0);
+
+  useEffect(() => {
+    cargarDatos();
+  }, []);
+
+  const cargarDatos = async () => {
+    const clientesData = await obtenerClientes();
+    const productosData = await obtenerProductos();
+    const pendientesData = await obtenerPendientes();
+
+    setClientes(clientesData.filter((c) => c.activo));
+    setProductos(productosData.filter((p) => p.activo));
+    setPendientes(pendientesData);
+  };
+
+  const cargarPendiente = async (id) => {
+    const data = await obtenerPendiente(id);
+    setPendiente(data);
+    setPendienteId(id);
+  };
+
+  const contarPorEstado = (estado) => {
+    if (estado === "TODOS") return pendientes.length;
+
+    return pendientes.filter(
+        (p) => p.estado?.toString().trim().toUpperCase() === estado
+    ).length;
+    };
+
+    const normalizar = (texto) =>
+    texto?.toString().trim().toUpperCase();
+
+    const pendientesFiltrados = pendientes.filter((p) => {
+    if (estadoFiltro === "TODOS") return true;
+
+    return normalizar(p.estado) === estadoFiltro;
+    });
+
+  const {
+    page,
+    totalPages,
+    paginatedData,
+    nextPage,
+    prevPage,
+    goToPage,
+    setPage
+  } = usePagination(pendientesFiltrados, 10);
+
+    useEffect(() => {
+    setPage(1);
+    }, [estadoFiltro]);
+
+  const crearNuevoPendiente = async () => {
+    if (!clienteId) return alert("Seleccione un cliente");
+
+    const result = await crearPendiente({
+      clienteId: parseInt(clienteId),
+    });
+
+    await cargarPendiente(result.pendienteVentaId);
+    await cargarDatos();
+  };
+
+  const agregarProducto = async () => {
+    if (!productoId) return alert("Seleccione un producto");
+        try {
+            await agregarProductoPendiente(pendienteId, {
+                productoId: parseInt(productoId),
+                cantidad: parseInt(cantidad),
+                descuento: parseFloat(descuento),
+            });
+
+            await cargarPendiente(pendienteId);
+            await cargarDatos();
+
+            setProductoId("");
+            setCantidad(1);
+            setDescuento(0);
+    } catch (error) {
+        const data = error.response?.data;
+
+            const mensaje = data
+                ?.split("\n")[0]
+                ?.replace("System.Exception:", "")
+                ?.trim();
+
+            alert(mensaje || "Ocurrió un error"); 
+    }
+  };
+
+  const eliminarProducto = async (detalleId) => {
+    if (!window.confirm("¿Eliminar producto?")) return;
+        try {
+            await eliminarProductoPendiente(detalleId);
+
+            await cargarPendiente(pendienteId);
+            await cargarDatos();
+
+            alert("Producto eliminado correctamente");
+        } catch (error) {
+            const data = error.response?.data;
+
+            const mensaje = data
+                ?.split("\n")[0]
+                ?.replace("System.Exception:", "")
+                ?.trim();
+
+            alert(mensaje || "Ocurrió un error");
+        }
+    };
+
+  const facturar = async (id) => {
+    if (!window.confirm("¿Generar factura?")) return;
+
+    const resultado = await generarFactura(id);
+    alert(`Factura #${resultado.facturaId} generada`);
+
+    setPendiente(null);
+    setPendienteId(null);
+    await cargarDatos();
+  };
+
+  const cancelar = async (id) => {
+    if (!window.confirm("¿Cancelar pendiente?")) return;
+
+    await cancelarPendiente(id);
+
+    if (pendienteId === id) {
+      setPendiente(null);
+      setPendienteId(null);
+    }
+
+    await cargarDatos();
+  };
+
+  return (
+    <div className="page-container">
+      <h2>Pendientes de Venta</h2>
+
+      <div style={{ marginBottom: 20 }}>
+        <select
+          value={clienteId}
+          onChange={(e) => setClienteId(e.target.value)}
+        >
+          <option value="">Seleccione cliente</option>
+          {clientes.map((c) => (
+            <option key={c.idCli} value={c.idCli}>
+              {c.nombre}
+            </option>
+          ))}
+        </select>
+
+        <button onClick={crearNuevoPendiente}>Nuevo Pendiente</button>
+      </div>
+
+      <h3>Pendientes Registrados</h3>
+      <h4>Filtrar por estado:</h4>
+          <div style={{ marginBottom: 15, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {ESTADOS.map((estado) => {
+                const activo = estadoFiltro === estado;
+
+                return (
+                <button
+                    key={estado}
+                    onClick={() => {
+                    setEstadoFiltro(estado);
+                    setPage(1);
+                    }}
+                    style={{
+                    padding: "8px 14px",
+                    borderRadius: "20px",
+                    border: "1px solid #ccc",
+                    cursor: "pointer",
+                    backgroundColor: activo ? "#2563eb" : "#fff",
+                    color: activo ? "#fff" : "#333",
+                    fontWeight: activo ? "600" : "400",
+                    transition: "all 0.2s ease",
+                    }}
+                >
+                    {estado} ({contarPorEstado(estado)})
+                </button>
+                );
+            })}
+        </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {paginatedData.map((p) => (
+            <tr key={p.pendienteVentaId}>
+              <td>{p.pendienteVentaId}</td>
+              <td>{p.cliente}</td>
+              <td>{p.estado}</td>
+              <td>{p.total}</td>
+              <td>
+                {p.estado?.toString().trim().toUpperCase() === "ABIERTO" ? (
+                    <>
+                    <button onClick={() => cargarPendiente(p.pendienteVentaId)}>
+                        Editar
+                    </button>
+
+                    <button onClick={() => facturar(p.pendienteVentaId)}>
+                        Facturar
+                    </button>
+
+                    <button onClick={() => cancelar(p.pendienteVentaId)}>
+                        Cancelar
+                    </button>
+                    </>
+                ) : (
+                    <button onClick={() => cargarPendiente(p.pendienteVentaId)}>
+                    Ver
+                    </button>
+                )}
+               </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          nextPage={nextPage}
+          prevPage={prevPage}
+          goToPage={goToPage}
+        />
+      {pendiente && (
+        <>
+          <hr />
+          <h3>Pendiente #{pendiente.pendienteVentaId}</h3>
+
+          <h4>Cliente: {pendiente.cliente}</h4>
+
+          <div>
+            <select
+              value={productoId}
+              onChange={(e) => setProductoId(e.target.value)}
+            >
+              <option value="">Producto</option>
+              {productos.map((p) => (
+                <option key={p.idProducto} value={p.idProducto}>
+                  {p.nombre}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="number"
+              value={cantidad}
+              onChange={(e) => setCantidad(e.target.value)}
+            />
+
+            <input
+              type="number"
+              value={descuento}
+              onChange={(e) => setDescuento(e.target.value)}
+            />
+
+            <button onClick={agregarProducto}>Agregar Producto</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Valor</th>
+                <th>Descuento</th>
+                <th>Total</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {pendiente.detalles.map((d) => (
+                <tr key={d.detallePendienteVentaId}>
+                  <td>{d.producto}</td>
+                  <td>{d.cantidad}</td>
+                  <td>{d.valorUnitario}</td>
+                  <td>{d.descuento}</td>
+                  <td>{d.total}</td>
+                  <td>
+                    <button
+                      onClick={() =>
+                        eliminarProducto(d.detallePendienteVentaId)
+                      }
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h3>Total: {pendiente.total}</h3>
+        </>
+      )}
+    </div>
+  );
+}

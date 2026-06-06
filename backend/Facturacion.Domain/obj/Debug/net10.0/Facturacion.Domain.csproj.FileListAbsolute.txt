@@ -1,0 +1,11 @@
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\bin\Debug\net10.0\Facturacion.Domain.deps.json
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\bin\Debug\net10.0\Facturacion.Domain.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\bin\Debug\net10.0\Facturacion.Domain.pdb
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.AssemblyInfoInputs.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.AssemblyInfo.cs
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\refint\Facturacion.Domain.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.pdb
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\ref\Facturacion.Domain.dll
