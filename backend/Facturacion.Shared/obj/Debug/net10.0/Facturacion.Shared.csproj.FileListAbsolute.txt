@@ -9,3 +9,4 @@ C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Shared\o
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Shared\obj\Debug\net10.0\refint\Facturacion.Shared.dll
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Shared\obj\Debug\net10.0\Facturacion.Shared.pdb
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Shared\obj\Debug\net10.0\ref\Facturacion.Shared.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Shared\obj\Debug\net10.0\Facturacion.Shared.sourcelink.json

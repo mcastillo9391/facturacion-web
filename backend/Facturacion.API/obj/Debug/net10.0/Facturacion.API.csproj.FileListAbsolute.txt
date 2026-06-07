@@ -61,3 +61,5 @@ C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.API\obj\
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.API\obj\Debug\net10.0\Facturacion.API.pdb
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.API\obj\Debug\net10.0\Facturacion.API.genruntimeconfig.cache
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.API\obj\Debug\net10.0\ref\Facturacion.API.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.API\obj\Debug\net10.0\Facturacion.API.sourcelink.json
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.API\bin\Debug\net10.0\appsettings.Production.json

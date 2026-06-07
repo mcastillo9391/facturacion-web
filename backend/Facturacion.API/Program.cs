@@ -18,21 +18,19 @@ using Facturacion.Application.Services.Dashboard;
 var builder = WebApplication.CreateBuilder(args);
 
 // CORS
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedOrigins")
+    .Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
-options.AddPolicy(
-"Frontend",
-policy =>
-{
-policy
-.WithOrigins(
-"http://localhost:5173"
-)
-.AllowAnyHeader()
-.AllowAnyMethod();
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.WithOrigins(allowedOrigins ?? new string[] {})
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
-});
-
 
 // Controllers
 builder.Services.AddControllers();
@@ -163,7 +161,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("Frontend");
+
+app.UseCors("CorsPolicy");
+//app.UseCors("Frontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

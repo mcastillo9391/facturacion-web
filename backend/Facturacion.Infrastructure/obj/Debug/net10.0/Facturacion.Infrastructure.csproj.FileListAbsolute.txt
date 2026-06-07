@@ -19,3 +19,4 @@ C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastr
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.pdb
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.genruntimeconfig.cache
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\ref\Facturacion.Infrastructure.dll
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.sourcelink.json

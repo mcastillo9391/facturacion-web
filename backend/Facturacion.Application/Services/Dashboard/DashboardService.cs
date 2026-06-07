@@ -72,8 +72,7 @@ public class DashboardService
 
         return new DashboardDto
         {
-            VentasHoy = 0,
-
+            
             VentasMes = ventasMes,
 
             RecaudosHoy = recaudosHoy,

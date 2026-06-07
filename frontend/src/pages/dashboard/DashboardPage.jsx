@@ -22,7 +22,7 @@ const cargar =
 
       const response =
         await obtenerDashboard();
-
+        console.log("DASHBOARD RESPONSE:", response);
       setDatos(response);
 
     } catch (error) {
@@ -56,16 +56,6 @@ return (
   </h2>
 
   <div className="cards-grid">
-
-    <div className="card">
-      <h3>Ventas Hoy</h3>
-      <p>
-        $
-        {Number(
-          datos.ventasHoy
-        ).toLocaleString()}
-      </p>
-    </div>
 
     <div className="card">
       <h3>Ventas Mes</h3>
