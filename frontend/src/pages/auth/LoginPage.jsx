@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import "./LoginPage.css";
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { user, login } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -13,9 +13,13 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (user) {
+      return <Navigate to="/dashboard" replace />;
+    }
+    
     try {
       await login(username, password);
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch {
       setError("Usuario o contraseña incorrectos");
     }

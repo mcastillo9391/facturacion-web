@@ -160,18 +160,17 @@ const {
 
 return ( <div className="page-container">
 
-  <div className="page-header">
+  <div className="page-hero">
+    <div>
+      <h1>Productos</h1>
+      <p>
+        Catálogo de productos
+      </p>
+    </div>
 
-    <h2>
-      Productos
-    </h2>
-
-    <button
-      onClick={abrirNuevo}
-    >
+    <button onClick={abrirNuevo}>
       Nuevo Producto
     </button>
-
   </div>
 
   {mostrarFormulario && (
@@ -255,107 +254,112 @@ return ( <div className="page-container">
 
   )}
 
-  <input
-    type="text"
-    placeholder="Buscar producto..."
-    value={busqueda}
-    onChange={(e) =>
-      setBusqueda(
-        e.target.value
-      )
-    }
-  />
+  <div className="search-container">
+    <input
+      type="text"
+      placeholder="Buscar producto..."
+      value={busqueda}
+      onChange={(e) =>
+        setBusqueda(
+          e.target.value
+        )
+      }
+    />
+  </div>
+  <div className="table-container">
+    <div className="table-scroll">
+      <table>
 
-  <table>
+        <thead>
 
-    <thead>
-
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Costo</th>
-        <th>Venta</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-      </tr>
-
-    </thead>
-
-    <tbody>
-
-      {paginatedData.map(
-        (producto) => (
-
-          <tr
-            key={
-              producto.idProducto
-            }
-          >
-
-            <td>
-              {
-                producto.idProducto
-              }
-            </td>
-
-            <td>
-              {
-                producto.nombre
-              }
-            </td>
-
-            <td>
-              $
-              {Number(
-                producto.valorCosto
-              ).toLocaleString()}
-            </td>
-
-            <td>
-              $
-              {Number(
-                producto.valorVenta
-              ).toLocaleString()}
-            </td>
-
-            <td>
-              {producto.activo
-                ? "Sí"
-                : "No"}
-            </td>
-
-            <td>
-
-              <button
-                onClick={() =>
-                  abrirEditar(
-                    producto
-                  )
-                }
-              >
-                Editar
-              </button>
-
-              <button
-                onClick={() =>
-                  desactivar(
-                    producto.idProducto
-                  )
-                }
-              >
-                Desactivar
-              </button>
-
-            </td>
-
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Costo</th>
+            <th>Venta</th>
+            <th>Activo</th>
+            <th>Acciones</th>
           </tr>
 
-        )
-      )}
+        </thead>
 
-    </tbody>
+        <tbody>
 
-  </table>
+          {paginatedData.map(
+            (producto) => (
+
+              <tr
+                key={
+                  producto.idProducto
+                }
+              >
+
+                <td>
+                  {
+                    producto.idProducto
+                  }
+                </td>
+
+                <td>
+                  {
+                    producto.nombre
+                  }
+                </td>
+
+                <td>
+                  $
+                  {Number(
+                    producto.valorCosto
+                  ).toLocaleString()}
+                </td>
+
+                <td>
+                  $
+                  {Number(
+                    producto.valorVenta
+                  ).toLocaleString()}
+                </td>
+
+                <td>
+                  {producto.activo
+                    ? "Sí"
+                    : "No"}
+                </td>
+
+                <td>
+
+                  <button
+                    onClick={() =>
+                      abrirEditar(
+                        producto
+                      )
+                    }
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      desactivar(
+                        producto.idProducto
+                      )
+                    }
+                  >
+                    Desactivar
+                  </button>
+
+                </td>
+
+              </tr>
+
+            )
+          )}
+
+        </tbody>
+
+      </table>
+    </div>
+  </div>
 
     <Pagination
       page={page}

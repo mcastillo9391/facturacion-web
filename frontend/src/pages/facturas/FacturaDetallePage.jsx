@@ -91,185 +91,184 @@ const saldo =
 factura.valorFactura -
 (factura.valorAbonado || 0);
 
-return ( <div className="page-container">
+return (
+  <div className="page-container">
 
-  <button
-    onClick={() =>
-      navigate("/facturas")
-    }
-  >
-    ← Volver
-  </button>
+    <div className="page-hero">
+      <div>
+        <h1>Factura #{factura.codigo}</h1>
+        <p>
+          Gestión de pagos y detalle de factura
+        </p>
+      </div>
 
-  <h2>
-    Factura #
-    {factura.codigo}
-  </h2>
+      <button
+        className="btn-view"
+        onClick={() => navigate("/facturas")}
+      >
+        ← Volver
+      </button>
+    </div>
 
-  <hr />
+    <div className="cards-grid">
 
-  <p>
-    <strong>
-      Cliente:
-    </strong>
-    {" "}
-    {factura.cliente}
-  </p>
+      <div className="card">
+        <h3>Cliente</h3>
+        <p>{factura.cliente}</p>
+      </div>
 
-  <p>
-    <strong>
-      Estado:
-    </strong>
-    {" "}
-    {factura.estado}
-  </p>
+      <div className="card">
+        <h3>Estado</h3>
 
-  <p>
-    <strong>
-      Total:
-    </strong>
-    {" "}
-    $
-    {Number(
-      factura.valorFactura
-    ).toLocaleString()}
-  </p>
+        <span
+          className={`badge ${
+            factura.estado === "PAGADA"
+              ? "success"
+              : "warning"
+          }`}
+        >
+          {factura.estado}
+        </span>
+      </div>
 
-  <p>
-    <strong>
-      Abonado:
-    </strong>
-    {" "}
-    $
-    {Number(
-      factura.valorAbonado || 0
-    ).toLocaleString()}
-  </p>
+      <div className="card">
+        <h3>Total Factura</h3>
+        <p>
+          $
+          {Number(
+            factura.valorFactura
+          ).toLocaleString()}
+        </p>
+      </div>
 
-  <p>
-    <strong>
-      Saldo:
-    </strong>
-    {" "}
-    $
-    {Number(
-      saldo
-    ).toLocaleString()}
-  </p>
+      <div className="card">
+        <h3>Valor Abonado</h3>
+        <p>
+          $
+          {Number(
+            factura.valorAbonado || 0
+          ).toLocaleString()}
+        </p>
+      </div>
 
-  <hr />
+      <div className="card">
+        <h3>Saldo Pendiente</h3>
+        <p>
+          $
+          {Number(
+            saldo
+          ).toLocaleString()}
+        </p>
+      </div>
 
-  <h3>
-    Productos
-  </h3>
+    </div>
 
-  <table>
+    <div className="detail-card">
 
-    <thead>
-      <tr>
-        <th>
-          Producto
-        </th>
+      <h3
+        style={{
+          marginBottom: "20px"
+        }}
+      >
+        Productos Facturados
+      </h3>
 
-        <th>
-          Cantidad
-        </th>
+      <div className="table-container">
+        <div className="table-scroll">
 
-        <th>
-          Valor
-        </th>
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Valor Unitario</th>
+                <th>Total</th>
+              </tr>
+            </thead>
 
-        <th>
-          Total
-        </th>
-      </tr>
-    </thead>
+            <tbody>
 
-    <tbody>
+              {factura.detalles?.map(
+                (d) => (
+                  <tr key={d.codigo}>
+                    <td>{d.producto}</td>
 
-      {
-        factura.detalles?.map(
-          d => (
-            <tr
-              key={d.codigo}
-            >
+                    <td>{d.cantidad}</td>
 
-              <td>
-                {
-                  d.producto
-                }
-              </td>
+                    <td>
+                      $
+                      {Number(
+                        d.valorUnitario
+                      ).toLocaleString()}
+                    </td>
 
-              <td>
-                {
-                  d.cantidad
-                }
-              </td>
+                    <td>
+                      $
+                      {Number(
+                        d.total
+                      ).toLocaleString()}
+                    </td>
+                  </tr>
+                )
+              )}
 
-              <td>
-                $
-                {
-                  Number(
-                    d.valorUnitario
-                  )
-                  .toLocaleString()
-                }
-              </td>
+            </tbody>
+          </table>
 
-              <td>
-                $
-                {
-                  Number(
-                    d.total
-                  )
-                  .toLocaleString()
-                }
-              </td>
+        </div>
+      </div>
 
-            </tr>
-          )
-        )
-      }
+    </div>
 
-    </tbody>
+    {factura.estado !== "PAGADA" && (
 
-  </table>
-
-  {
-    factura.estado !==
-    "PAGADA" && (
-
-      <>
-        <hr />
-
-        <h3>
+      <div
+        className="detail-card"
+        style={{
+          marginTop: "24px"
+        }}
+      >
+        <h3
+          style={{
+            marginBottom: "20px"
+          }}
+        >
           Registrar Pago
         </h3>
 
-        <input
-          type="number"
-          value={valorPago}
-          onChange={(e) =>
-            setValorPago(
-              e.target.value
-            )
-          }
-          placeholder="Valor a pagar"
-        />
-
-        <button
-          onClick={
-            guardarPago
-          }
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "1fr auto",
+            gap: "12px",
+            alignItems: "center",
+          }}
         >
-          Registrar Pago
-        </button>
 
-      </>
-    )
-  }
+          <input
+            type="number"
+            placeholder="Valor a pagar"
+            value={valorPago}
+            onChange={(e) =>
+              setValorPago(
+                e.target.value
+              )
+            }
+          />
 
-</div>
+          <button
+            className="btn-success"
+            onClick={guardarPago}
+          >
+            Registrar Pago
+          </button>
 
+        </div>
+      </div>
+
+    )}
+
+  </div>
 );
 }

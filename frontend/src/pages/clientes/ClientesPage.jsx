@@ -98,9 +98,17 @@ export default function ClientesPage() {
 
   return (
     <div className="page-container">
-      <div className="page-header">
-        <h2>Clientes</h2>
-        <button onClick={abrirNuevo}>Nuevo Cliente</button>
+      <div className="page-hero">
+        <div>
+          <h1>Clientes</h1>
+          <p>
+            Gestión de clientes registrados
+          </p>
+        </div>
+
+        <button onClick={abrirNuevo}>
+          Nuevo Cliente
+        </button>
       </div>
 
       {mostrarFormulario && (
@@ -148,45 +156,50 @@ export default function ClientesPage() {
         </form>
       )}
 
-      <input
-        type="text"
-        placeholder="Buscar cliente..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-      />
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Buscar cliente..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+        />
+      </div>
+      <div className="table-container">
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Identificación</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Identificación</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Activo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {paginatedData.map((cliente) => (
-            <tr key={cliente.idCli}>
-              <td>{cliente.idCli}</td>
-              <td>{cliente.identificacion}</td>
-              <td>{cliente.nombre}</td>
-              <td>{cliente.direccion}</td>
-              <td>{cliente.telefono}</td>
-              <td>{cliente.activo ? "Sí" : "No"}</td>
-              <td>
-                <button onClick={() => abrirEditar(cliente)}>Editar</button>
-                <button onClick={() => desactivar(cliente.idCli)}>
-                  Desactivar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            <tbody>
+              {paginatedData.map((cliente) => (
+                <tr key={cliente.idCli}>
+                  <td>{cliente.idCli}</td>
+                  <td>{cliente.identificacion}</td>
+                  <td>{cliente.nombre}</td>
+                  <td>{cliente.direccion}</td>
+                  <td>{cliente.telefono}</td>
+                  <td>{cliente.activo ? "Sí" : "No"}</td>
+                  <td>
+                    <button onClick={() => abrirEditar(cliente)}>Editar</button>
+                    <button onClick={() => desactivar(cliente.idCli)}>
+                      Desactivar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <Pagination
         page={page}
         totalPages={totalPages}

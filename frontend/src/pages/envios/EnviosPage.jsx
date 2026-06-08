@@ -2,8 +2,10 @@ import {
   useEffect,
   useState
 } from "react";
+
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
+
 import {
   obtenerEnvios,
   crearEnvio,
@@ -11,18 +13,13 @@ import {
 } from "../../services/envioService";
 
 export default function EnviosPage() {
-
-  const [envios, setEnvios] =
-    useState([]);
-
-  const [busqueda, setBusqueda] =
-    useState("");
+  const [envios, setEnvios] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
 
   const [modoEdicion, setModoEdicion] =
     useState(false);
 
-  const [envioSeleccionado,
-    setEnvioSeleccionado] =
+  const [envioSeleccionado, setEnvioSeleccionado] =
     useState(null);
 
   const [formData, setFormData] =
@@ -31,317 +28,308 @@ export default function EnviosPage() {
       valorEnvio: ""
     });
 
-  const cargarEnvios =
-    async () => {
-
-      const data =
-        await obtenerEnvios();
-
-      setEnvios(data);
-    };
+  const cargarEnvios = async () => {
+    const data = await obtenerEnvios();
+    setEnvios(data);
+  };
 
   useEffect(() => {
     cargarEnvios();
   }, []);
 
-  const limpiarFormulario =
-    () => {
+  const limpiarFormulario = () => {
+    setModoEdicion(false);
 
-      setModoEdicion(false);
+    setEnvioSeleccionado(null);
 
-      setEnvioSeleccionado(
-        null
+    setFormData({
+      ciudad: "",
+      valorEnvio: ""
+    });
+  };
+
+  const guardar = async (e) => {
+    e.preventDefault();
+
+    if (!formData.ciudad.trim()) {
+      alert("Debe ingresar la ciudad.");
+      return;
+    }
+
+    if (
+      !formData.valorEnvio ||
+      parseFloat(formData.valorEnvio) <= 0
+    ) {
+      alert(
+        "Debe ingresar un valor válido."
       );
+      return;
+    }
 
-      setFormData({
-        ciudad: "",
-        valorEnvio: ""
-      });
+    const payload = {
+      ciudad: formData.ciudad,
+      valorEnvio: parseFloat(
+        formData.valorEnvio
+      )
     };
 
-  const guardar =
-    async (e) => {
-
-      e.preventDefault();
-
-      if (
-        !formData.ciudad.trim()
-      ) {
-        alert(
-          "Debe ingresar la ciudad."
-        );
-        return;
-      }
-
-      if (
-        !formData.valorEnvio ||
-        parseFloat(
-          formData.valorEnvio
-        ) <= 0
-      ) {
-        alert(
-          "Debe ingresar un valor válido."
-        );
-        return;
-      }
-
-      const payload = {
-        ciudad:
-          formData.ciudad,
-        valorEnvio:
-          parseFloat(
-            formData.valorEnvio
-          )
-      };
-
-      if (
-        modoEdicion
-      ) {
+    try {
+      if (modoEdicion) {
         await actualizarEnvio(
           envioSeleccionado.codigo,
           payload
         );
       } else {
-        await crearEnvio(
-          payload
-        );
+        await crearEnvio(payload);
       }
 
       limpiarFormulario();
-
       cargarEnvios();
-    };
 
-  const editar =
-    (envio) => {
-
-      setModoEdicion(true);
-
-      setEnvioSeleccionado(
-        envio
+    } catch {
+      alert(
+        "Ocurrió un error guardando el envío."
       );
+    }
+  };
 
-      setFormData({
-        ciudad:
-          envio.ciudad,
-        valorEnvio:
-          envio.valorEnvio
-      });
-    };
+  const editar = (envio) => {
+    setModoEdicion(true);
 
-  const enviosFiltrados =
-    envios.filter(
-      (e) =>
-        e.ciudad
-          ?.toLowerCase()
-          .includes(
-            busqueda.toLowerCase()
-          )
-    );
+    setEnvioSeleccionado(envio);
 
-    const {
-        page,
-        totalPages,
-        paginatedData,
-        nextPage,
-        prevPage,
-        goToPage,
-        setPage
-    } = usePagination(enviosFiltrados, 10);
-    
-    useEffect(() => {
+    setFormData({
+      ciudad: envio.ciudad,
+      valorEnvio: envio.valorEnvio
+    });
+  };
+
+  const enviosFiltrados = envios.filter(
+    (e) =>
+      e.ciudad
+        ?.toLowerCase()
+        .includes(busqueda.toLowerCase())
+  );
+
+  const {
+    page,
+    totalPages,
+    paginatedData,
+    nextPage,
+    prevPage,
+    goToPage,
+    setPage
+  } = usePagination(
+    enviosFiltrados,
+    10
+  );
+
+  useEffect(() => {
     setPage(1);
-    }, [busqueda]);
-    
+  }, [busqueda, setPage]);
+
   const totalEnvios =
     enviosFiltrados.reduce(
       (acc, item) =>
-        acc +
-        item.valorEnvio,
+        acc + Number(item.valorEnvio || 0),
       0
     );
 
   return (
     <div className="page-container">
 
-      <div className="page-header">
+      {/* HERO */}
+      <div className="page-hero">
 
-        <h2>
-          Gastos de Envío
-        </h2>
+        <div>
+          <h1>🚚 Gastos de Envío</h1>
 
-        <h3>
-          Total:
-          {" "}
-          $
-          {totalEnvios.toLocaleString()}
-        </h3>
+          <p>
+            Administración de costos de transporte
+          </p>
+        </div>
+
+        <div>
+          <h2>
+            $
+            {totalEnvios.toLocaleString()}
+          </h2>
+        </div>
 
       </div>
 
+      {/* FORMULARIO */}
       <form
         onSubmit={guardar}
+        className="cliente-form"
       >
 
         <input
           type="text"
           placeholder="Ciudad"
-          value={
-            formData.ciudad
-          }
+          value={formData.ciudad}
           onChange={(e) =>
             setFormData({
               ...formData,
-              ciudad:
-                e.target.value
+              ciudad: e.target.value
             })
           }
+          required
         />
 
         <input
           type="number"
           placeholder="Valor envío"
-          value={
-            formData.valorEnvio
-          }
+          value={formData.valorEnvio}
           onChange={(e) =>
             setFormData({
               ...formData,
-              valorEnvio:
-                e.target.value
+              valorEnvio: e.target.value
             })
           }
+          required
         />
 
-        <button
-          type="submit"
-        >
-          {modoEdicion
-            ? "Actualizar"
-            : "Registrar"}
-        </button>
+        <div>
 
-        {modoEdicion && (
           <button
-            type="button"
-            onClick={
-              limpiarFormulario
-            }
+            type="submit"
+            className="btn-success"
           >
-            Cancelar
+            {modoEdicion
+              ? "Actualizar"
+              : "Registrar"}
           </button>
-        )}
+
+          {modoEdicion && (
+            <button
+              type="button"
+              className="btn-danger"
+              onClick={
+                limpiarFormulario
+              }
+            >
+              Cancelar
+            </button>
+          )}
+
+        </div>
 
       </form>
 
-      <br />
+      {/* BUSCADOR */}
+      <div className="search-container">
 
-      <input
-        type="text"
-        placeholder="Buscar ciudad..."
-        value={busqueda}
-        onChange={(e) =>
-          setBusqueda(
-            e.target.value
-          )
-        }
-      />
+        <input
+          type="text"
+          placeholder="Buscar ciudad..."
+          value={busqueda}
+          onChange={(e) =>
+            setBusqueda(e.target.value)
+          }
+        />
 
-      <table>
+      </div>
 
-        <thead>
-          <tr>
+      {/* TABLA */}
+      <div className="table-container">
 
-            <th>
-              Código
-            </th>
+        <div className="table-scroll">
 
-            <th>
-              Fecha
-            </th>
+          <table>
 
-            <th>
-              Ciudad
-            </th>
-
-            <th>
-              Valor
-            </th>
-
-            <th>
-              Acción
-            </th>
-
-          </tr>
-        </thead>
-
-        <tbody>
-
-          {paginatedData.map(
-            (envio) => (
-
-              <tr
-                key={
-                  envio.codigo
-                }
-              >
-
-                <td>
-                  {
-                    envio.codigo
-                  }
-                </td>
-
-                <td>
-                  {
-                    new Date(
-                      envio.fechaEnvio
-                    )
-                    .toLocaleDateString()
-                  }
-                </td>
-
-                <td>
-                  {
-                    envio.ciudad
-                  }
-                </td>
-
-                <td>
-                  $
-                  {envio.valorEnvio
-                    .toLocaleString()}
-                </td>
-
-                <td>
-
-                  <button
-                    onClick={() =>
-                      editar(
-                        envio
-                      )
-                    }
-                  >
-                    Editar
-                  </button>
-
-                </td>
-
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Fecha</th>
+                <th>Ciudad</th>
+                <th>Valor</th>
+                <th>Acción</th>
               </tr>
+            </thead>
 
-            )
-          )}
+            <tbody>
 
-        </tbody>
+              {paginatedData.length === 0 ? (
 
-      </table>
+                <tr>
+                  <td
+                    colSpan="5"
+                    style={{
+                      textAlign: "center"
+                    }}
+                  >
+                    No existen registros
+                  </td>
+                </tr>
+
+              ) : (
+
+                paginatedData.map(
+                  (envio) => (
+
+                    <tr
+                      key={envio.codigo}
+                    >
+
+                      <td>
+                        {envio.codigo}
+                      </td>
+
+                      <td>
+                        {new Date(
+                          envio.fechaEnvio
+                        ).toLocaleDateString()}
+                      </td>
+
+                      <td>
+                        {envio.ciudad}
+                      </td>
+
+                      <td>
+                        $
+                        {Number(
+                          envio.valorEnvio
+                        ).toLocaleString()}
+                      </td>
+
+                      <td>
+
+                        <button
+                          className="btn-view"
+                          onClick={() =>
+                            editar(envio)
+                          }
+                        >
+                          Editar
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  )
+                )
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+      {/* PAGINACIÓN */}
       <Pagination
         page={page}
         totalPages={totalPages}
         nextPage={nextPage}
         prevPage={prevPage}
         goToPage={goToPage}
-     />
+      />
+
     </div>
   );
 }

@@ -147,3 +147,12 @@
     padding: 16px;
   }
 }
+
+.topbar h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.topbar span {
+  display: block;
+}

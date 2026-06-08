@@ -59,12 +59,12 @@ return (
   <div className="dashboard-grid">
 
     <div className="kpi-card">
-      <h3>Facturas Pendientes</h3>
+      <h3>📄 Facturas Pendientes</h3>
       <span>{datos.facturasPendientes}</span>
     </div>
 
     <div className="kpi-card">
-      <h3>Ventas Mes</h3>
+      <h3>💰 Ventas Mes</h3>
       <span>$
         {Number(
           datos.ventasMes
@@ -72,12 +72,12 @@ return (
     </div>
 
     <div className="kpi-card">
-      <h3>Recaudos Hoy</h3>
+      <h3>🏦 Recaudos Hoy</h3>
       <span>${Number(datos.recaudosHoy).toLocaleString()}</span>
     </div>
 
     <div className="kpi-card">
-      <h3>Cartera</h3>
+      <h3>📊 Cartera</h3>
       <span>${Number(datos.carteraPendiente).toLocaleString()}</span>
     </div>
 

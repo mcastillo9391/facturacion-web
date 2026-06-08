@@ -25,8 +25,8 @@ export default function MainLayout() {
           >
             ✕
           </button>
-        </div>
 
+        </div>
         <p className="user-name">{user?.nombre}</p>
 
         <nav>
@@ -64,7 +64,17 @@ export default function MainLayout() {
             ☰
           </button>
 
-          <h1>Facturación Web</h1>
+            <div>
+                <h1>SUMPTUOUS</h1>
+                <span
+                    style={{
+                    color: "#94a3b8",
+                    fontSize: "12px"
+                    }}
+                >
+                    Sistema de Facturación
+                </span>
+            </div>
         </header>
 
         <main className="content">

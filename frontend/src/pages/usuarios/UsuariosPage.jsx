@@ -5,223 +5,163 @@ import {
   crearUsuario,
   actualizarUsuario,
   desactivarUsuario,
-  obtenerRoles
+  obtenerRoles,
 } from "../../services/usuarioService";
 
 import { usePagination } from "../../hooks/usePagination";
-
 import Pagination from "../../components/Pagination";
 
 export default function UsuariosPage() {
+  const [usuarios, setUsuarios] = useState([]);
+  const [roles, setRoles] = useState([]);
 
-  const [usuarios, setUsuarios] =
-    useState([]);
+  const [busqueda, setBusqueda] = useState("");
 
-  const [roles, setRoles] =
-    useState([]);
-
-  const [busqueda, setBusqueda] =
-    useState("");
-
-  const [mostrarFormulario,
-    setMostrarFormulario] =
+  const [mostrarFormulario, setMostrarFormulario] =
     useState(false);
 
-  const [editando,
-    setEditando] =
+  const [editando, setEditando] =
     useState(null);
 
-  const [formulario,
-    setFormulario] =
+  const [formulario, setFormulario] =
     useState({
       nombre: "",
       username: "",
       password: "",
       rolId: 1,
-      activo: true
+      activo: true,
     });
 
-  const cargarDatos =
-    async () => {
+  const cargarDatos = async () => {
+    try {
+      const usuariosData =
+        await obtenerUsuarios();
 
-      try {
+      const rolesData =
+        await obtenerRoles();
 
-        const usuariosData =
-          await obtenerUsuarios();
+      setUsuarios(usuariosData);
+      setRoles(rolesData);
+    } catch (error) {
+      console.error(error);
 
-        const rolesData =
-          await obtenerRoles();
-
-        setUsuarios(
-          usuariosData
-        );
-
-        setRoles(
-          rolesData
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "Error cargando usuarios"
-        );
-      }
-    };
+      alert(
+        "Error cargando usuarios"
+      );
+    }
+  };
 
   useEffect(() => {
     cargarDatos();
   }, []);
 
-  const limpiarFormulario =
-    () => {
+  const limpiarFormulario = () => {
+    setFormulario({
+      nombre: "",
+      username: "",
+      password: "",
+      rolId: 1,
+      activo: true,
+    });
 
-      setFormulario({
-        nombre: "",
-        username: "",
-        password: "",
-        rolId: 1,
-        activo: true
-      });
+    setEditando(null);
+  };
 
-      setEditando(null);
-    };
+  const abrirNuevo = () => {
+    limpiarFormulario();
+    setMostrarFormulario(true);
+  };
 
-  const abrirNuevo =
-    () => {
+  const abrirEditar = (usuario) => {
+    const rolEncontrado =
+      roles.find(
+        (r) =>
+          r.nombre === usuario.rol
+      );
+
+    setFormulario({
+      nombre: usuario.nombre,
+      username: usuario.username,
+      password: "",
+      rolId:
+        rolEncontrado?.rolId || 1,
+      activo: usuario.activo,
+    });
+
+    setEditando(
+      usuario.usuarioId
+    );
+
+    setMostrarFormulario(true);
+  };
+
+  const guardar = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (editando) {
+        await actualizarUsuario(
+          editando,
+          {
+            nombre:
+              formulario.nombre,
+            username:
+              formulario.username,
+            rolId: parseInt(
+              formulario.rolId
+            ),
+            activo:
+              formulario.activo,
+          }
+        );
+      } else {
+        await crearUsuario({
+          nombre:
+            formulario.nombre,
+          username:
+            formulario.username,
+          password:
+            formulario.password,
+          rolId: parseInt(
+            formulario.rolId
+          ),
+          activo: true,
+        });
+      }
+
+      setMostrarFormulario(false);
 
       limpiarFormulario();
 
-      setMostrarFormulario(true);
-    };
+      cargarDatos();
+    } catch (error) {
+      console.error(error);
 
-  const abrirEditar =
-    (usuario) => {
-
-      const rolEncontrado =
-        roles.find(
-          r =>
-            r.nombre === usuario.rol
-        );
-
-      setFormulario({
-        nombre:
-          usuario.nombre,
-
-        username:
-          usuario.username,
-
-        password: "",
-
-        rolId:
-          rolEncontrado?.rolId || 1,
-
-        activo:
-          usuario.activo
-      });
-
-      setEditando(
-        usuario.usuarioId
+      alert(
+        "Error al guardar usuario"
       );
+    }
+  };
 
-      setMostrarFormulario(
-        true
+  const desactivar = async (id) => {
+    if (
+      !window.confirm(
+        "¿Desea desactivar este usuario?"
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await desactivarUsuario(id);
+
+      cargarDatos();
+    } catch {
+      alert(
+        "Error al desactivar usuario"
       );
-    };
-
-  const guardar =
-    async (e) => {
-
-      e.preventDefault();
-
-      try {
-
-        if (editando) {
-
-          await actualizarUsuario(
-            editando,
-            {
-              nombre:
-                formulario.nombre,
-
-              username:
-                formulario.username,
-
-              rolId:
-                parseInt(
-                  formulario.rolId
-                ),
-
-              activo:
-                formulario.activo
-            }
-          );
-
-        } else {
-
-          await crearUsuario({
-            nombre:
-              formulario.nombre,
-
-            username:
-              formulario.username,
-
-            password:
-              formulario.password,
-
-            rolId:
-              parseInt(
-                formulario.rolId
-              ),
-
-            activo:
-              true
-          });
-        }
-
-        setMostrarFormulario(
-          false
-        );
-
-        limpiarFormulario();
-
-        cargarDatos();
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "Error al guardar usuario"
-        );
-      }
-    };
-
-  const desactivar =
-    async (id) => {
-
-      if (
-        !window.confirm(
-          "¿Desea desactivar este usuario?"
-        )
-      ) {
-        return;
-      }
-
-      try {
-
-        await desactivarUsuario(id);
-
-        cargarDatos();
-
-      } catch {
-
-        alert(
-          "Error al desactivar usuario"
-        );
-      }
-    };
+    }
+  };
 
   const usuariosFiltrados =
     usuarios.filter(
@@ -244,41 +184,42 @@ export default function UsuariosPage() {
     paginatedData,
     nextPage,
     prevPage,
-    goToPage
+    goToPage,
+    setPage,
   } = usePagination(
     usuariosFiltrados,
     10
   );
 
-  return (
+  useEffect(() => {
+    setPage(1);
+  }, [busqueda, setPage]);
 
+  return (
     <div className="page-container">
 
+      {/* HERO */}
       <div className="page-header">
 
         <h2>
-          Usuarios
+          👤 Usuarios
         </h2>
 
         <button
-          onClick={
-            abrirNuevo
-          }
+          className="btn-primary"
+          onClick={abrirNuevo}
         >
           Nuevo Usuario
         </button>
 
       </div>
 
+      {/* FORMULARIO */}
       {mostrarFormulario && (
-
         <form
-          onSubmit={
-            guardar
-          }
+          onSubmit={guardar}
           className="cliente-form"
         >
-
           <input
             placeholder="Nombre"
             value={
@@ -288,7 +229,7 @@ export default function UsuariosPage() {
               setFormulario({
                 ...formulario,
                 nombre:
-                  e.target.value
+                  e.target.value,
               })
             }
             required
@@ -303,14 +244,13 @@ export default function UsuariosPage() {
               setFormulario({
                 ...formulario,
                 username:
-                  e.target.value
+                  e.target.value,
               })
             }
             required
           />
 
           {!editando && (
-
             <input
               type="password"
               placeholder="Contraseña"
@@ -321,12 +261,11 @@ export default function UsuariosPage() {
                 setFormulario({
                   ...formulario,
                   password:
-                    e.target.value
+                    e.target.value,
                 })
               }
               required
             />
-
           )}
 
           <select
@@ -337,163 +276,175 @@ export default function UsuariosPage() {
               setFormulario({
                 ...formulario,
                 rolId:
-                  e.target.value
+                  e.target.value,
               })
             }
           >
-
-            {roles.map(
-              (rol) => (
-
-                <option
-                  key={
-                    rol.rolId
-                  }
-                  value={
-                    rol.rolId
-                  }
-                >
-                  {rol.nombre}
-                </option>
-
-              )
-            )}
-
+            {roles.map((rol) => (
+              <option
+                key={rol.rolId}
+                value={rol.rolId}
+              >
+                {rol.nombre}
+              </option>
+            ))}
           </select>
 
           <div>
-
             <button
               type="submit"
+              className="btn-success"
             >
               Guardar
             </button>
 
             <button
               type="button"
+              className="btn-danger"
               onClick={() => {
-
                 limpiarFormulario();
-
                 setMostrarFormulario(
                   false
                 );
-
               }}
             >
               Cancelar
             </button>
-
           </div>
-
         </form>
-
       )}
 
-      <input
-        type="text"
-        placeholder="Buscar usuario..."
-        value={busqueda}
-        onChange={(e) =>
-          setBusqueda(
-            e.target.value
-          )
-        }
-      />
+      {/* BUSCADOR */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Buscar usuario..."
+          value={busqueda}
+          onChange={(e) =>
+            setBusqueda(
+              e.target.value
+            )
+          }
+        />
+      </div>
 
-      <table>
+      {/* TABLA */}
+      <div className="table-container">
+        <div className="table-scroll">
 
-        <thead>
+          <table>
 
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-            <th>Activo</th>
-            <th>Acciones</th>
-          </tr>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
 
-        </thead>
+            <tbody>
 
-        <tbody>
-
-          {paginatedData.map(
-            (usuario) => (
-
-              <tr
-                key={
-                  usuario.usuarioId
-                }
-              >
-
-                <td>
-                  {
-                    usuario.usuarioId
-                  }
-                </td>
-
-                <td>
-                  {
-                    usuario.nombre
-                  }
-                </td>
-
-                <td>
-                  {
-                    usuario.username
-                  }
-                </td>
-
-                <td>
-                  {
-                    usuario.rol
-                  }
-                </td>
-
-                <td>
-                  {usuario.activo
-                    ? "Sí"
-                    : "No"}
-                </td>
-
-                <td>
-
-                  <button
-                    onClick={() =>
-                      abrirEditar(
-                        usuario
-                      )
-                    }
+              {paginatedData.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="6"
+                    style={{
+                      textAlign:
+                        "center",
+                    }}
                   >
-                    Editar
-                  </button>
-
-                  {usuario.activo && (
-
-                    <button
-                      onClick={() =>
-                        desactivar(
-                          usuario.usuarioId
-                        )
+                    No existen usuarios
+                  </td>
+                </tr>
+              ) : (
+                paginatedData.map(
+                  (usuario) => (
+                    <tr
+                      key={
+                        usuario.usuarioId
                       }
                     >
-                      Desactivar
-                    </button>
+                      <td>
+                        {
+                          usuario.usuarioId
+                        }
+                      </td>
 
-                  )}
+                      <td>
+                        {
+                          usuario.nombre
+                        }
+                      </td>
 
-                </td>
+                      <td>
+                        {
+                          usuario.username
+                        }
+                      </td>
 
-              </tr>
+                      <td>
+                        {usuario.rol}
+                      </td>
 
-            )
-          )}
+                      <td>
+                        <span
+                          className={`badge ${
+                            usuario.activo
+                              ? "success"
+                              : "danger"
+                          }`}
+                        >
+                          {usuario.activo
+                            ? "ACTIVO"
+                            : "INACTIVO"}
+                        </span>
+                      </td>
 
-        </tbody>
+                      <td>
+                        <div className="actions">
 
-      </table>
+                          <button
+                            className="btn-view"
+                            onClick={() =>
+                              abrirEditar(
+                                usuario
+                              )
+                            }
+                          >
+                            Editar
+                          </button>
 
+                          {usuario.activo && (
+                            <button
+                              className="btn-danger"
+                              onClick={() =>
+                                desactivar(
+                                  usuario.usuarioId
+                                )
+                              }
+                            >
+                              Desactivar
+                            </button>
+                          )}
+
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                )
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+      </div>
+
+      {/* PAGINACIÓN */}
       <Pagination
         page={page}
         totalPages={totalPages}

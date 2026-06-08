@@ -44,6 +44,23 @@ export default function FacturasPage() {
       .includes(busqueda.toLowerCase())
   );
 
+  const totalFacturas = facturas.length;
+
+  const totalPagadas =
+    facturas.filter(
+      f => f.estado === "PAGADA"
+    ).length;
+
+  const totalPendientes =
+    facturas.filter(
+      f => f.estado !== "PAGADA"
+    ).length;
+
+  const carteraTotal =
+    facturas.reduce(
+      (acc, f) => acc + Number(f.saldo || 0),
+      0
+    );
   // =========================
   // PAGINACIÓN
   // =========================
@@ -65,91 +82,134 @@ export default function FacturasPage() {
     <div className="facturas-container">
 
       {/* HEADER */}
-      <h2 className="title">📄 Gestión de Facturas</h2>
+      <div className="page-hero">
+        <div>
+          <h1>Facturas</h1>
+          <p>
+            Consulta y gestión de facturación
+          </p>
+        </div>
+      </div>
+
+      <div className="cards-grid">
+
+      <div className="card">
+        <h3>Total Facturas</h3>
+        <p>{totalFacturas}</p>
+      </div>
+
+      <div className="card">
+        <h3>Facturas Pagadas</h3>
+        <p>{totalPagadas}</p>
+      </div>
+
+      <div className="card">
+        <h3>Facturas Pendientes</h3>
+        <p>{totalPendientes}</p>
+      </div>
+
+      <div className="card">
+        <h3>Cartera</h3>
+        <p>
+          $
+          {carteraTotal.toLocaleString()}
+        </p>
+      </div>
+
+    </div>
 
       {/* BUSCADOR */}
-      <input
-        className="search-input"
-        placeholder="Buscar por código o cliente..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-      />
-
+      <div
+        style={{
+          marginBottom: "20px"
+        }}
+      >
+          <input
+            className="search-input"
+            type="text"
+            placeholder="Buscar factura o cliente..."
+            value={busqueda}
+            onChange={(e) =>
+              setBusqueda(e.target.value)
+            }
+          />
+      </div>
+      
       {/* TABLA */}
-      <div className="table-wrapper table-scroll">
-
-        <table className="facturas-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Cliente</th>
-              <th>Fecha</th>
-              <th>Valor</th>
-              <th>Abonado</th>
-              <th>Saldo</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {paginatedData.length === 0 ? (
+      <div className="table-container">
+        <div className="table-scroll">  
+          <table>
+            <thead>
               <tr>
-                <td colSpan="8" style={{ textAlign: "center" }}>
-                  No hay facturas
-                </td>
+                <th>Código</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Valor</th>
+                <th>Abonado</th>
+                <th>Saldo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
               </tr>
-            ) : (
-              paginatedData.map((f) => (
-                <tr key={f.codigo}>
-                  <td>{f.codigo}</td>
-                  <td>{f.cliente}</td>
-                  <td>
-                    {new Date(f.fechaGen).toLocaleDateString()}
-                  </td>
-                  <td>${f.valorFactura.toLocaleString()}</td>
-                  <td>${f.valorAbonado.toLocaleString()}</td>
-                  <td>${f.saldo.toLocaleString()}</td>
+            </thead>
 
-                  <td>
-                    <span
-                      className={`badge ${
-                        f.estado === "PAGADA"
-                          ? "success"
-                          : "warning"
-                      }`}
-                    >
-                      {f.estado}
-                    </span>
-                  </td>
-
-                  <td>
-                    <div className="actions">
-
-                      <button
-                        className="btn-view"
-                        onClick={() => verDetalle(f.codigo)}
-                      >
-                        Ver
-                      </button>
-
-                      <button
-                        className="btn-success"
-                        onClick={() =>
-                          navigate(`/facturas/${f.codigo}`)
-                        }
-                      >
-                        Abrir
-                      </button>
-
-                    </div>
+            <tbody>
+              {paginatedData.length === 0 ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center" }}>
+                    No hay facturas
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                paginatedData.map((f) => (
+                  <tr key={f.codigo}>
+                    <td>{f.codigo}</td>
+                    <td>{f.cliente}</td>
+                    <td>
+                      {new Date(f.fechaGen).toLocaleDateString()}
+                    </td>
+                    <td>${f.valorFactura.toLocaleString()}</td>
+                    <td>${f.valorAbonado.toLocaleString()}</td>
+                    <td>${f.saldo.toLocaleString()}</td>
 
+                    <td>
+                      <span
+                        className={`badge ${
+                          f.estado === "PAGADA"
+                            ? "success"
+                            : "warning"
+                        }`}
+                      >
+                        {f.estado}
+                      </span>
+                    </td>
+
+                    <td>
+                      <div className="actions">
+
+                        <button
+                          className="btn-view"
+                          onClick={() => verDetalle(f.codigo)}
+                        >
+                          Ver
+                        </button>
+
+                        <button
+                          className="btn-success"
+                          onClick={() =>
+                            navigate(`/facturas/${f.codigo}`)
+                          }
+                        >
+                          Abrir
+                        </button>
+
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>      
       </div>
 
       {/* PAGINACIÓN */}
@@ -167,28 +227,35 @@ export default function FacturasPage() {
 
           <h3>Factura #{facturaDetalle.codigo}</h3>
 
-          <p>
-            <b>Cliente:</b> {facturaDetalle.cliente}
-          </p>
+          <div className="cards-grid">
 
-          <p>
-            <b>Estado:</b> {facturaDetalle.estado}
-          </p>
+            <div className="card">
+              <h3>Cliente</h3>
+              <p>{facturaDetalle.cliente}</p>
+            </div>
 
-          <p>
-            <b>Valor:</b> $
-            {facturaDetalle.valorFactura.toLocaleString()}
-          </p>
+            <div className="card">
+              <h3>Estado</h3>
+              <p>{facturaDetalle.estado}</p>
+            </div>
 
-          <p>
-            <b>Abonado:</b> $
-            {facturaDetalle.valorAbonado.toLocaleString()}
-          </p>
+            <div className="card">
+              <h3>Valor</h3>
+              <p>
+                $
+                {facturaDetalle.valorFactura.toLocaleString()}
+              </p>
+            </div>
 
-          <p>
-            <b>Saldo:</b> $
-            {facturaDetalle.saldo.toLocaleString()}
-          </p>
+            <div className="card">
+              <h3>Saldo</h3>
+              <p>
+                $
+                {facturaDetalle.saldo.toLocaleString()}
+              </p>
+            </div>
+
+          </div>
 
           {/* DETALLE ITEMS */}
           <table>

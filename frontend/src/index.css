@@ -1,5 +1,5 @@
 /* =========================
-   DESIGN SYSTEM GLOBAL
+   DESIGN SYSTEM
 ========================= */
 
 :root {
@@ -20,58 +20,51 @@
 
   --radius: 14px;
 
-  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
 
   font: 16px system-ui, Segoe UI, Roboto, sans-serif;
-  color: var(--text);
-  background: var(--bg);
 }
 
 /* =========================
    RESET
 ========================= */
 
-body {
-  margin: 0;
-  background: var(--bg);
-}
-
 * {
   box-sizing: border-box;
 }
 
-/* =========================
-   LAYOUT ROOT
-========================= */
-
 html,
 body,
 #root {
+  margin: 0;
   width: 100%;
   min-height: 100vh;
-  margin: 0;
 }
 
 body {
+  background: var(--bg);
+  color: var(--text);
   overflow-x: hidden;
 }
 
 /* =========================
-   HEADINGS
+   TYPOGRAPHY
 ========================= */
 
-h1, h2, h3 {
-  color: var(--text-title);
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
+  color: var(--text-title);
 }
 
 h2 {
-  font-size: 22px;
   margin-bottom: 14px;
 }
 
 /* =========================
-   PAGE CONTAINER
+   PAGE
 ========================= */
 
 .page-container {
@@ -79,22 +72,64 @@ h2 {
 }
 
 /* =========================
-   CARDS SYSTEM
+   HERO
+========================= */
+
+.page-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 24px;
+  margin-bottom: 24px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #111827,
+      #1e293b
+    );
+
+  border: 1px solid var(--border);
+}
+
+.page-hero p {
+  color: var(--text-soft);
+  margin-top: 6px;
+}
+
+.page-hero button {
+  background: var(--primary);
+  color: white;
+  padding: 12px 18px;
+}
+
+/* =========================
+   KPI CARDS
 ========================= */
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+
   gap: 16px;
+
   margin-bottom: 20px;
 }
 
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
+
   border-radius: var(--radius);
+
   padding: 16px;
+
   box-shadow: var(--shadow);
+
   transition: .2s;
 }
 
@@ -103,44 +138,150 @@ h2 {
 }
 
 .card h3 {
-  font-size: 13px;
   color: var(--text-soft);
-  margin-bottom: 6px;
+  font-size: 13px;
+  margin-bottom: 8px;
 }
 
 .card p {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-title);
 }
 
 /* =========================
-   INPUTS
+   FORMS
 ========================= */
 
-input {
+input,
+select {
   width: 100%;
-  max-width: 320px;
+  max-width: 500px;
+
   padding: 10px 12px;
+
   border-radius: 10px;
+
   border: 1px solid var(--border);
+
   background: var(--panel);
+
   color: var(--text);
-  outline: none;
-  margin-bottom: 16px;
 }
 
-input:focus {
+input:focus,
+select:focus {
+  outline: none;
+
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(59,130,246,.2);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(59,130,246,.2);
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 500px;
+}
+
+.cliente-form {
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+
+  padding: 24px;
+
+  margin-bottom: 24px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 16px;
+}
+
+.cliente-form div:last-child {
+  grid-column: 1 / -1;
+
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 12px;
 }
 
 /* =========================
-   TABLE SYSTEM (GLOBAL FIX)
+   BUTTONS
 ========================= */
+
+button {
+  border: none;
+  cursor: pointer;
+
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  transition: .2s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-success {
+  background: rgba(34,197,94,.15);
+  color: #4ade80;
+}
+
+.btn-warning {
+  background: rgba(245,158,11,.15);
+  color: #fbbf24;
+}
+
+.btn-danger {
+  background: rgba(239,68,68,.15);
+  color: #f87171;
+}
+
+.btn-view {
+  background: rgba(59,130,246,.15);
+  color: #60a5fa;
+}
+
+/* =========================
+   TABLES
+========================= */
+
+.table-container {
+  background: var(--panel);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  overflow: hidden;
+
+  box-shadow: var(--shadow);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
 
 table {
   width: 100%;
+  min-width: 900px;
   border-collapse: collapse;
 }
 
@@ -149,89 +290,44 @@ thead {
 }
 
 th {
-  text-align: left;
   padding: 12px;
-  font-size: 12px;
+  text-align: left;
+
   color: var(--text-soft);
+
   border-bottom: 1px solid var(--border);
+
+  font-size: 12px;
 }
 
 td {
   padding: 12px;
+
   border-bottom: 1px solid var(--border);
-  color: var(--text);
 }
 
 tr:hover {
-  background: rgba(59,130,246,0.05);
+  background:
+    rgba(59,130,246,.05);
 }
 
 /* =========================
-   TABLE WRAPPER (IMPORTANT)
+   ACTIONS
 ========================= */
 
-.table-wrapper {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
+.actions {
+  display: flex;
+  gap: 8px;
 }
 
 /* =========================
-   BUTTON SYSTEM
-========================= */
-
-button {
-  border: none;
-  cursor: pointer;
-  border-radius: 10px;
-  padding: 8px 12px;
-  font-size: 13px;
-  transition: .2s;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-/* PRIMARY ACTION */
-.btn-primary {
-  background: var(--primary);
-  color: white;
-}
-
-/* VIEW */
-.btn-view {
-  background: rgba(59,130,246,.15);
-  color: #60a5fa;
-}
-
-/* SUCCESS */
-.btn-success {
-  background: rgba(34,197,94,.15);
-  color: #4ade80;
-}
-
-/* WARNING */
-.btn-warning {
-  background: rgba(245,158,11,.15);
-  color: #fbbf24;
-}
-
-/* DANGER */
-.btn-danger {
-  background: rgba(239,68,68,.15);
-  color: #f87171;
-}
-
-/* =========================
-   STATUS BADGES
+   BADGES
 ========================= */
 
 .badge {
   padding: 4px 10px;
   border-radius: 999px;
+
   font-size: 11px;
   font-weight: 600;
 }
@@ -252,33 +348,76 @@ button:hover {
 }
 
 /* =========================
-   DETAIL PANEL
+   DETAIL CARD
 ========================= */
 
 .detail-card {
   margin-top: 20px;
-  padding: 18px;
-  border-radius: var(--radius);
+
+  padding: 20px;
+
   background: var(--panel);
+
   border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
   box-shadow: var(--shadow);
 }
 
 /* =========================
-   ACTION ROW
+   STATUS FILTERS
 ========================= */
 
-.actions {
-  display: flex;
-  gap: 8px;
+.status-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(160px,1fr));
+
+  gap: 16px;
+
+  margin-bottom: 24px;
 }
 
-/* =========================
-   SCROLL TABLE FIX
-========================= */
+.status-card {
+  background: var(--panel);
 
-.table-scroll {
-  overflow-x: auto;
+  border: 1px solid var(--border);
+
+  border-radius: 16px;
+
+  padding: 16px;
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.status-card:hover {
+  transform: translateY(-2px);
+}
+
+.status-card.active {
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 1px var(--primary);
+}
+
+.status-card h4 {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.status-card span {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 28px;
+
+  font-weight: 700;
 }
 
 /* =========================
@@ -286,15 +425,102 @@ button:hover {
 ========================= */
 
 @media (max-width: 768px) {
+
+  .page-container {
+    padding: 16px;
+  }
+
   .cards-grid {
     grid-template-columns: 1fr;
   }
 
-  input {
-    max-width: 100%;
+  .page-hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
   }
 
-  td, th {
-    font-size: 12px;
+  .page-hero button {
+    width: 100%;
   }
+
+  .cliente-form {
+    grid-template-columns: 1fr;
+  }
+
+  .cliente-form div:last-child {
+    flex-direction: column;
+  }
+
+  .cliente-form button {
+    width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .detail-card {
+    padding: 14px;
+  }
+
+  table {
+    min-width: 700px;
+  }
+}
+.badge.open {
+  background: rgba(245,158,11,.15);
+  color: #fbbf24;
+}
+
+.badge.closed {
+  background: rgba(34,197,94,.15);
+  color: #4ade80;
+}
+
+.badge.cancelled {
+  background: rgba(239,68,68,.15);
+  color: #f87171;
+}
+
+.factura-summary {
+  display: grid;
+  gap: 20px;
+}
+
+.factura-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.factura-payment-card {
+  margin-top: 24px;
+}
+
+.factura-payment-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+
+  .factura-payment-form {
+    grid-template-columns: 1fr;
+  }
+
+  .factura-payment-form button {
+    width: 100%;
+  }
+
 }

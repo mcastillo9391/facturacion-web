@@ -167,7 +167,14 @@ export default function PendientesPage() {
 
   return (
     <div className="page-container">
-      <h2>Pendientes de Venta</h2>
+      <div className="page-hero">
+        <div>
+          <h1>Pendientes de Venta</h1>
+          <p>
+            Gestión de pedidos y facturación
+          </p>
+        </div>
+      </div>
 
       <div style={{ marginBottom: 20 }}>
         <select
@@ -185,78 +192,81 @@ export default function PendientesPage() {
         <button onClick={crearNuevoPendiente}>Nuevo Pendiente</button>
       </div>
 
-      <h3>Pendientes Registrados</h3>
       <h4>Filtrar por estado:</h4>
-          <div style={{ marginBottom: 15, display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <div className="status-grid">
             {ESTADOS.map((estado) => {
-                const activo = estadoFiltro === estado;
 
-                return (
-                <button
-                    key={estado}
-                    onClick={() => {
+              const activo =
+                estadoFiltro === estado;
+
+              return (
+                <div
+                  key={estado}
+                  className={`status-card ${
+                    activo ? "active" : ""
+                  }`}
+                  onClick={() => {
                     setEstadoFiltro(estado);
                     setPage(1);
-                    }}
-                    style={{
-                    padding: "8px 14px",
-                    borderRadius: "20px",
-                    border: "1px solid #ccc",
-                    cursor: "pointer",
-                    backgroundColor: activo ? "#2563eb" : "#fff",
-                    color: activo ? "#fff" : "#333",
-                    fontWeight: activo ? "600" : "400",
-                    transition: "all 0.2s ease",
-                    }}
+                  }}
                 >
-                    {estado} ({contarPorEstado(estado)})
-                </button>
-                );
+                  <h4>{estado}</h4>
+
+                  <span>
+                    {contarPorEstado(estado)}
+                  </span>
+                </div>
+              );
             })}
+          </div>
+        <div className="table-container">
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Estado</th>
+                  <th>Total</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {paginatedData.map((p) => (
+                  <tr key={p.pendienteVentaId}>
+                    <td>{p.pendienteVentaId}</td>
+                    <td>{p.cliente}</td>
+                    <td>{p.estado}</td>
+                    <td>{p.total}</td>
+                    <td>
+                      {p.estado?.toString().trim().toUpperCase() === "ABIERTO" ? (
+                          <>
+                          <button onClick={() => cargarPendiente(p.pendienteVentaId)}>
+                              Editar
+                          </button>
+
+                          <button onClick={() => facturar(p.pendienteVentaId)}>
+                              Facturar
+                          </button>
+
+                          <button onClick={() => cancelar(p.pendienteVentaId)}>
+                              Cancelar
+                          </button>
+                          </>
+                      ) : (
+                          <button onClick={() => cargarPendiente(p.pendienteVentaId)}>
+                          Ver
+                          </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Estado</th>
-            <th>Total</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          {paginatedData.map((p) => (
-            <tr key={p.pendienteVentaId}>
-              <td>{p.pendienteVentaId}</td>
-              <td>{p.cliente}</td>
-              <td>{p.estado}</td>
-              <td>{p.total}</td>
-              <td>
-                {p.estado?.toString().trim().toUpperCase() === "ABIERTO" ? (
-                    <>
-                    <button onClick={() => cargarPendiente(p.pendienteVentaId)}>
-                        Editar
-                    </button>
-
-                    <button onClick={() => facturar(p.pendienteVentaId)}>
-                        Facturar
-                    </button>
-
-                    <button onClick={() => cancelar(p.pendienteVentaId)}>
-                        Cancelar
-                    </button>
-                    </>
-                ) : (
-                    <button onClick={() => cargarPendiente(p.pendienteVentaId)}>
-                    Ver
-                    </button>
-                )}
-               </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
         <Pagination
           page={page}
           totalPages={totalPages}
@@ -265,13 +275,20 @@ export default function PendientesPage() {
           goToPage={goToPage}
         />
       {pendiente && (
-        <>
-          <hr />
+        <div className="detail-card">
           <h3>Pendiente #{pendiente.pendienteVentaId}</h3>
 
           <h4>Cliente: {pendiente.cliente}</h4>
 
-          <div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "2fr 1fr 1fr auto",
+              gap: "12px",
+              marginBottom: "20px"
+            }}
+          >
             <select
               value={productoId}
               onChange={(e) => setProductoId(e.target.value)}
@@ -334,7 +351,7 @@ export default function PendientesPage() {
           </table>
 
           <h3>Total: {pendiente.total}</h3>
-        </>
+        </div>
       )}
     </div>
   );
