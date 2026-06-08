@@ -44,13 +44,16 @@ body {
    LAYOUT ROOT
 ========================= */
 
+html,
+body,
 #root {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
+  width: 100%;
   min-height: 100vh;
-  border-inline: 1px solid var(--border);
-  background: var(--bg);
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 /* =========================

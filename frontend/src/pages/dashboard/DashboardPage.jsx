@@ -6,6 +6,7 @@ useState
 import {
 obtenerDashboard
 } from "../../services/dashboardService";
+import "./DashboardPage.css";
 
 export default function DashboardPage() {
 
@@ -55,81 +56,33 @@ return (
     Dashboard
   </h2>
 
-  <div className="cards-grid">
+  <div className="dashboard-grid">
 
-    <div className="card">
+    <div className="kpi-card">
+      <h3>Facturas Pendientes</h3>
+      <span>{datos.facturasPendientes}</span>
+    </div>
+
+    <div className="kpi-card">
       <h3>Ventas Mes</h3>
-      <p>
-        $
+      <span>$
         {Number(
           datos.ventasMes
-        ).toLocaleString()}
-      </p>
+        ).toLocaleString()}</span>
     </div>
 
-    <div className="card">
+    <div className="kpi-card">
       <h3>Recaudos Hoy</h3>
-      <p>
-        $
-        {Number(
-          datos.recaudosHoy
-        ).toLocaleString()}
-      </p>
+      <span>${Number(datos.recaudosHoy).toLocaleString()}</span>
     </div>
 
-    <div className="card">
-      <h3>Recaudos Mes</h3>
-      <p>
-        $
-        {Number(
-          datos.recaudosMes
-        ).toLocaleString()}
-      </p>
-    </div>
-
-    <div className="card">
-      <h3>Gastos Envío</h3>
-      <p>
-        $
-        {Number(
-          datos.gastosEnvioMes
-        ).toLocaleString()}
-      </p>
-    </div>
-
-    <div className="card">
+    <div className="kpi-card">
       <h3>Cartera</h3>
-      <p>
-        $
-        {Number(
-          datos.carteraPendiente
-        ).toLocaleString()}
-      </p>
-    </div>
-
-    <div className="card">
-      <h3>Facturas Pendientes</h3>
-      <p>
-        {datos.facturasPendientes}
-      </p>
-    </div>
-
-    <div className="card">
-      <h3>Clientes Activos</h3>
-      <p>
-        {datos.clientesActivos}
-      </p>
-    </div>
-
-    <div className="card">
-      <h3>Productos Activos</h3>
-      <p>
-        {datos.productosActivos}
-      </p>
+      <span>${Number(datos.carteraPendiente).toLocaleString()}</span>
     </div>
 
   </div>
-
+  
 </div>
 
 );

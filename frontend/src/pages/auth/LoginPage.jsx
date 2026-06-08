@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-
+import "./LoginPage.css";
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -22,34 +22,39 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="page-container" style={{ maxWidth: 400, margin: "100px auto" }}>
-      <h1>Iniciar Sesión</h1>
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-header">
+          <h1>SUMPTUOUS</h1>
+          <p>Sistema de Facturación</p>
+        </div>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+            <br /><br />
 
-        <br /><br />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+            <br /><br />
 
-        <br /><br />
+            <button className="btn-primary" type="submit">
+              Entrar
+            </button>
+          </form>
 
-        <button className="btn-primary" type="submit">
-          Entrar
-        </button>
-      </form>
-
-      {error && <p>{error}</p>}
+          {error && <p>{error}</p>}
+      </div>
     </div>
+
   );
 }
