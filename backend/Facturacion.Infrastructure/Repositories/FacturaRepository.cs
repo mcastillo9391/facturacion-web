@@ -113,4 +113,15 @@ public class FacturaRepository : IFacturaRepository
                 x.ValorFactura
                 - (x.ValorAbonado ?? 0));
     }
+
+    public async Task<List<Factura>>
+        ObtenerPorUsuarioAsigAsync(
+            int usuarioId)
+    {
+        return await _context.Facturas
+            .Include(x => x.Cliente)
+            .Where(x =>
+                x.UsuarioAsig == usuarioId)
+            .ToListAsync();
+    }
 }

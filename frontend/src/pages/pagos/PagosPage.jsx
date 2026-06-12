@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
 
+import LoadingOverlay
+  from "../../components/LoadingOverlay";
+
 import {
   obtenerPagos,
   anularPago,
@@ -42,7 +45,9 @@ export default function PagosPage() {
   useEffect(() => {
     setPage(1);
   }, [busqueda, setPage]);
-
+  
+  const [Desactivando, setDesactivando] =
+    useState(false);
   const anular = async (idPago) => {
     const confirmar = window.confirm(
       "¿Desea anular este pago?"
@@ -51,6 +56,9 @@ export default function PagosPage() {
     if (!confirmar) return;
 
     try {
+      if (Desactivando) return;
+      setDesactivando(true);
+
       await anularPago(idPago);
 
       alert("Pago anulado correctamente");
@@ -61,6 +69,10 @@ export default function PagosPage() {
         error?.response?.data?.message ||
           "No fue posible anular el pago"
       );
+    } finally {
+
+      setDesactivando(false);
+
     }
   };
 
@@ -74,6 +86,13 @@ export default function PagosPage() {
 
   return (
     <div className="page-container">
+      
+      {Desactivando && (
+        <LoadingOverlay
+          mensaje="Anulando pago..."
+        />
+      )}
+      
       {/* HERO */}
       <div className="page-hero">
         <div>

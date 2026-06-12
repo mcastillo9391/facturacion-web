@@ -5,7 +5,9 @@ namespace Facturacion.Application.Interfaces.Services;
 public interface IFacturaService
 {
     Task<int> GenerarDesdePendienteAsync(
-        int pendienteVentaId);
+        int pendienteVentaId,
+        int usuarioGenerador,
+        int? usuarioAsig);
 
     Task<List<FacturaDto>>
         ObtenerTodasAsync();

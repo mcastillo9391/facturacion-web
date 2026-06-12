@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { obtenerClientes } from "../../services/clienteService";
 import { obtenerProductos } from "../../services/productoService";
-
+import { obtenerUsuarios } from "../../services/usuarioService";
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
+import LoadingOverlay
+  from "../../components/LoadingOverlay";
 
 import {
   obtenerPendientes,
@@ -18,6 +20,8 @@ import { generarFactura } from "../../services/facturaService";
 export default function PendientesPage() {
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [usuarioAsig, setUsuarioAsig] = useState("");
   const [pendientes, setPendientes] = useState([]);
   const ESTADOS = ["TODOS", "ABIERTO", "FACTURADA", "CANCELADA"];
 
@@ -39,9 +43,20 @@ export default function PendientesPage() {
     const clientesData = await obtenerClientes();
     const productosData = await obtenerProductos();
     const pendientesData = await obtenerPendientes();
+    const usuariosData = await obtenerUsuarios();
 
-    setClientes(clientesData.filter((c) => c.activo));
-    setProductos(productosData.filter((p) => p.activo));
+    setClientes(
+      clientesData.filter((c) => c.activo)
+    );
+
+    setProductos(
+      productosData.filter((p) => p.activo)
+    );
+
+    setUsuarios(
+      usuariosData.filter((u) => u.activo)
+    );
+
     setPendientes(pendientesData);
   };
 
@@ -93,9 +108,13 @@ export default function PendientesPage() {
     await cargarDatos();
   };
 
+  const [Agregando, setAgregando] =
+  useState(false);
   const agregarProducto = async () => {
     if (!productoId) return alert("Seleccione un producto");
-        try {
+      if (Agregando) return;
+      try {
+            setAgregando(true);
             await agregarProductoPendiente(pendienteId, {
                 productoId: parseInt(productoId),
                 cantidad: parseInt(cantidad),
@@ -117,6 +136,10 @@ export default function PendientesPage() {
                 ?.trim();
 
             alert(mensaje || "Ocurrió un error"); 
+    } finally {
+
+      setAgregando(false);
+
     }
   };
 
@@ -141,32 +164,111 @@ export default function PendientesPage() {
         }
     };
 
+  const [facturando, setFacturando] =
+  useState(false);
+
+  //window.confirm("¿Generar factura?")
   const facturar = async (id) => {
-    if (!window.confirm("¿Generar factura?")) return;
+    if (!window.confirm("¿Generar factura? \n\nVerifique que el pedido esté completo y el usuario esté asignado antes de facturar.")) {
+      return;
+    }
+    if (facturando) return;
+    try {
+      setFacturando(true);
+      const resultado =
+        await generarFactura(
+          id,
+          {
+            usuarioAsig:
+              usuarioAsig !== "" && usuarioAsig != null
+                ? parseInt(usuarioAsig)
+                : null
+          }
+        );
 
-    const resultado = await generarFactura(id);
-    alert(`Factura #${resultado.facturaId} generada`);
+      alert(
+        `Factura #${resultado.facturaId} generada`
+      );
 
-    setPendiente(null);
-    setPendienteId(null);
-    await cargarDatos();
+      setUsuarioAsig("");
+
+      setPendiente(null);
+      setPendienteId(null);
+
+      await cargarDatos();
+
+    } catch (error) {
+
+      const mensaje =
+        error?.response?.data
+          ?.split("\n")[0]
+          ?.replace("System.Exception:", "")
+          ?.trim();
+
+      alert(
+        mensaje ||
+        "No fue posible generar la factura"
+      );
+    } finally {
+
+      setFacturando(false);
+
+    }
   };
+
+  const [cancelando, setCancelando] =
+  useState(false);
 
   const cancelar = async (id) => {
     if (!window.confirm("¿Cancelar pendiente?")) return;
+    if (facturando) return;
+    try{
+      setCancelando(true);
+      
+      await cancelarPendiente(id);
 
-    await cancelarPendiente(id);
+      if (pendienteId === id) {
+        setPendiente(null);
+        setPendienteId(null);
+      }
 
-    if (pendienteId === id) {
-      setPendiente(null);
-      setPendienteId(null);
+      await cargarDatos();
+    } catch (error) {
+
+      const mensaje =
+        error?.response?.data
+          ?.split("\n")[0]
+          ?.replace("System.Exception:", "")
+          ?.trim();
+
+      alert(
+        mensaje ||
+        "No fue posible cancelar pendiente"
+      );
+    } finally {
+
+      setCancelando(false);
+
     }
-
-    await cargarDatos();
   };
 
   return (
     <div className="page-container">
+      {facturando && (
+        <LoadingOverlay
+          mensaje="Generando factura..."
+        />
+      )}
+      {Agregando && (
+        <LoadingOverlay
+          mensaje="Agregando producto..."
+        />
+      )}
+      {cancelando && (
+        <LoadingOverlay
+          mensaje="Cancelando pendiente..."
+        />
+      )}
       <div className="page-hero">
         <div>
           <h1>Pendientes de Venta</h1>
@@ -246,12 +348,30 @@ export default function PendientesPage() {
                               Editar
                           </button>
 
-                          <button onClick={() => facturar(p.pendienteVentaId)}>
-                              Facturar
+                          <button
+                            disabled={facturando}
+                            onClick={() =>
+                              facturar(p.pendienteVentaId)
+                            }
+                          >
+                            {
+                              facturando
+                                ? "Facturando..."
+                                : "Facturar"
+                            }
                           </button>
 
-                          <button onClick={() => cancelar(p.pendienteVentaId)}>
-                              Cancelar
+                          <button
+                            disabled={cancelando}
+                            onClick={() =>
+                              cancelar(p.pendienteVentaId)
+                            }
+                          >
+                            {
+                              cancelando
+                                ? "Cancelando..."
+                                : "Cancelar"
+                            }
                           </button>
                           </>
                       ) : (
@@ -279,7 +399,41 @@ export default function PendientesPage() {
           <h3>Pendiente #{pendiente.pendienteVentaId}</h3>
 
           <h4>Cliente: {pendiente.cliente}</h4>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "10px",
+              marginBottom: "20px"
+            }}
+          >
+            <label>
+              Asignar factura a:
+            </label>
 
+            <select
+              value={usuarioAsig}
+              onChange={(e) =>
+                setUsuarioAsig(
+                  e.target.value
+                )
+              }
+            >
+              <option value="">
+                Usuario que factura
+              </option>
+
+              {usuarios.map((u) => (
+                <option
+                  key={u.usuarioId}
+                  value={u.usuarioId}
+                >
+                  {u.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+          
           <div
             style={{
               display: "grid",

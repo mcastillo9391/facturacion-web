@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
+
+import LoadingOverlay
+  from "../../components/LoadingOverlay";
+
+
 import {
   obtenerClientes,
   crearCliente,
@@ -56,9 +61,13 @@ export default function ClientesPage() {
     setMostrarFormulario(true);
   };
 
+  const [Agregando, setAgregando] =
+  useState(false);
   const guardar = async (e) => {
     e.preventDefault();
     try {
+      if (Agregando) return;
+      setAgregando(true);
       if (editando) {
         await actualizarCliente(editando, { ...formulario, activo: true });
       } else {
@@ -69,13 +78,31 @@ export default function ClientesPage() {
       cargarClientes();
     } catch {
       alert("Error al guardar");
+    } finally {
+
+      setAgregando(false);
+
     }
   };
 
+  const [Desactivando, setDesactivando] =
+    useState(false);
   const desactivar = async (id) => {
-    if (!window.confirm("¿Desea desactivar este cliente?")) return;
-    await eliminarCliente(id);
-    cargarClientes();
+    try{  
+      if (!window.confirm("¿Desea desactivar este cliente?")) return;
+      if (Desactivando) return;
+      setDesactivando(true);
+      await eliminarCliente(id);
+      cargarClientes();
+    } catch {
+      alert(
+        "Error desactivando el producto"
+      );
+    } finally {
+
+      setDesactivando(false);
+
+    }
   };
 
   const clientesFiltrados = clientes.filter((c) =>
@@ -98,6 +125,17 @@ export default function ClientesPage() {
 
   return (
     <div className="page-container">
+      {Desactivando && (
+        <LoadingOverlay
+          mensaje="Desactivando producto..."
+        />
+      )}
+      {Agregando && (
+        <LoadingOverlay
+          mensaje="Agregando producto..."
+        />
+      )}
+      
       <div className="page-hero">
         <div>
           <h1>Clientes</h1>

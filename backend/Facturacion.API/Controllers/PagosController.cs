@@ -21,14 +21,24 @@ public class PagosController : ControllerBase
         Registrar(
             RegistrarPagoDto dto)
     {
-        await _service
-            .RegistrarPagoAsync(dto);
-
-        return Ok(new
+        Console.WriteLine(
+    "====================>Entró al pagocontroller<===========================");
+        try
         {
-            mensaje =
-                "Pago registrado correctamente"
-        });
+            await _service.RegistrarPagoAsync(dto);
+
+            return Ok(new
+            {
+                mensaje = "Pago registrado correctamente"
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return StatusCode(403, new
+            {
+                mensaje = ex.Message
+            });
+        }
     }
 
 

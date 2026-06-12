@@ -5,8 +5,8 @@ C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\o
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.AssemblyInfoInputs.cache
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.AssemblyInfo.cs
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.sourcelink.json
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.dll
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\refint\Facturacion.Domain.dll
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.pdb
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\ref\Facturacion.Domain.dll
-C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Domain\obj\Debug\net10.0\Facturacion.Domain.sourcelink.json

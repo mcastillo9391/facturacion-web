@@ -13,10 +13,10 @@ C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastr
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.AssemblyInfoInputs.cache
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.AssemblyInfo.cs
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.sourcelink.json
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturac.F259EAA9.Up2Date
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.dll
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\refint\Facturacion.Infrastructure.dll
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.pdb
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.genruntimeconfig.cache
 C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\ref\Facturacion.Infrastructure.dll
-C:\Users\Lenovo\Documents\SUMPTUOUS\facturacion-web\backend\Facturacion.Infrastructure\obj\Debug\net10.0\Facturacion.Infrastructure.sourcelink.json

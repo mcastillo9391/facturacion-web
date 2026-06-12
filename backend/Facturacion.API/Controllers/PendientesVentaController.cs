@@ -94,4 +94,26 @@ public class PendientesVentaController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{id}/usuarioasig")]
+    public async Task<IActionResult> ActualizarUsuarioAsig(
+        int id,
+        [FromBody] ActualizarUsuarioAsigDto dto)
+    {
+        try
+        {
+            await _service.ActualizarUsuarioAsigAsync(
+                id,
+                dto.UsuarioAsig);
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
+    }
 }

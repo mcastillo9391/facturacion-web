@@ -23,4 +23,7 @@ public interface IPendienteVentaService
 
     Task CancelarAsync(int id);
 
+    Task ActualizarUsuarioAsigAsync(
+        int pendienteVentaId,
+        int? usuarioAsig);
 }

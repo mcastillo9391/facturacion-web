@@ -20,6 +20,10 @@ public class Factura
 
     public Usuario? Usuario { get; set; }
 
+    public virtual Usuario? UsuarioAsigNavigation { get; set; } 
+
+    public int? UsuarioAsig { get; set; }
+
     public ICollection<DetalleFactura> Detalles
     {
         get;

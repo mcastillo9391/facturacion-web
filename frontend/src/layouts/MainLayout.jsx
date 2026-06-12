@@ -31,6 +31,8 @@ export default function MainLayout() {
 
         <nav>
           <Link to="/dashboard">Dashboard</Link>
+          <Link to="/cartera">Cartera</Link>
+          <Link to="/facturas">Facturas</Link>
 
           {(user?.rol === "Administrador" ||
             user?.rol === "Vendedor") && (
@@ -39,9 +41,7 @@ export default function MainLayout() {
               <Link to="/productos">Productos</Link>
               <Link to="/envios">Envíos</Link>
               <Link to="/pendientes">Pendientes</Link>
-              <Link to="/facturas">Facturas</Link>
               <Link to="/pagos">Pagos</Link>
-              <Link to="/cartera">Cartera</Link>
             </>
           )}
 

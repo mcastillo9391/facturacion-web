@@ -18,12 +18,16 @@ export const obtenerFactura =
     return response.data;
   };
 
-export const generarFactura =
-  async (pendienteId) => {
-    const response =
-      await api.post(
-        `/facturas/generar/${pendienteId}`
-      );
+export const generarFactura = async (
+  id,
+  payload = {}
+) => {
+  
+  const { data } =
+    await api.post(
+      `/facturas/generar/${id}`,
+      payload
+    );
 
-    return response.data;
-  };
+  return data;
+};

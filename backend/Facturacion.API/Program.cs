@@ -125,6 +125,12 @@ builder.Services.AddScoped<
     ICarteraService,
     CarteraService>();
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<
+    IUsuarioActualService,
+    UsuarioActualService>();
+
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"];
 

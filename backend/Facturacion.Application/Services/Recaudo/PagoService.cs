@@ -12,25 +12,44 @@ public class PagoService : IPagoService
 
     private readonly IPagoRepository
         _pagoRepository;
+    
+    private readonly IUsuarioActualService _usuarioActual;
 
     public PagoService(
         IFacturaRepository facturaRepository,
-        IPagoRepository pagoRepository)
+        IPagoRepository pagoRepository,
+        IUsuarioActualService usuarioActual)
     {
         _facturaRepository = facturaRepository;
         _pagoRepository = pagoRepository;
+        _usuarioActual = usuarioActual;
     }
 
     public async Task RegistrarPagoAsync(
         RegistrarPagoDto dto)
     {
+
+        Console.WriteLine(
+    $"Usuario: {_usuarioActual.UsuarioId}");
+
+Console.WriteLine(
+    $"Rol: {_usuarioActual.Rol}");      
         var factura =
             await _facturaRepository
                 .ObtenerPorIdAsync(dto.FacturaId);
 
-        if (factura == null)
+        if ((_usuarioActual.Rol ?? "")
+            .Trim()
+            .ToUpper() == "CONSULTA")
+        {
+            throw new UnauthorizedAccessException(
+                "No tiene permisos para registrar pagos.");
+        }
+
+        if (factura == null){
             throw new Exception(
                 "Factura no encontrada");
+        }        
 
         var saldo =
             factura.ValorFactura

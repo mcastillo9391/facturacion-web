@@ -22,6 +22,9 @@ public interface IFacturaRepository
 
     Task<int> ObtenerFacturasPendientesAsync();
     
+    Task<List<Factura>> ObtenerPorUsuarioAsigAsync(
+    int usuarioId);
+    
     Task<List<Factura>>
     ObtenerFacturasConSaldoPendienteAsync();
 

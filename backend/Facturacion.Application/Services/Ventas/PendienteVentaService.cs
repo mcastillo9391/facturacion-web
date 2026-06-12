@@ -190,6 +190,9 @@ public class PendienteVentaService : IPendienteVentaService
             Estado =
                 pendiente.Estado,
 
+            UsuarioAsig =
+                pendiente.UsuarioAsig,
+
             Total =
                 pendiente.Detalles
                     .Sum(x => x.Total),
@@ -227,28 +230,21 @@ public class PendienteVentaService : IPendienteVentaService
     public async Task EliminarProductoAsync(
         int detalleId)
     {
-        
-        // Revalidar el detalle después de obtener el pendiente para asegurarse de que existe y pertenece al pendiente
         var detalle =
             await _detalleRepository
                 .ObtenerPorIdAsync(detalleId);
-                
-        // Validar que el detalle exista y obtener el pendiente para validar su estado  
+
         var pendiente =
             await _pendienteVentaRepository
                 .ObtenerPorIdAsync(
                     detalle.PendienteVentaId);
-        
 
-
-        // Validar que el pendiente exista
         if (pendiente == null)
         {
             throw new Exception(
                 "Pendiente no encontrado.");
         }
 
-        // Solo se pueden modificar pendientes abiertos
         if (pendiente.Estado != "ABIERTO")
         {
             throw new Exception(
@@ -288,6 +284,9 @@ public class PendienteVentaService : IPendienteVentaService
 
                     Estado =
                         x.Estado,
+
+                    UsuarioAsig =
+                        x.UsuarioAsig,
 
                     Total =
                         x.Detalles.Sum(
@@ -349,4 +348,29 @@ public class PendienteVentaService : IPendienteVentaService
             .GuardarCambiosAsync();
     }
 
+    public async Task ActualizarUsuarioAsigAsync(
+        int pendienteVentaId,
+        int? usuarioAsig)
+    {
+        var pendiente =
+            await _pendienteVentaRepository
+                .ObtenerPorIdAsync(pendienteVentaId);
+
+        if (pendiente == null)
+            throw new Exception(
+                "Pendiente no encontrado.");
+
+        if (pendiente.Estado != "ABIERTO")
+            throw new Exception(
+                "Solo se puede modificar un pendiente abierto.");
+
+        pendiente.UsuarioAsig = usuarioAsig;
+        pendiente.FechaActualizacion = DateTime.Now;
+
+        await _pendienteVentaRepository
+            .ActualizarAsync(pendiente);
+
+        await _pendienteVentaRepository
+            .GuardarCambiosAsync();
+    }
 }

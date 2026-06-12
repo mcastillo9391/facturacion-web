@@ -33,6 +33,10 @@ public class FacturaConfiguration
 
         builder.Property(x => x.UsuarioId)
             .HasColumnName("usuarioid");
+        
+        builder.Property(x => x.UsuarioAsig)
+            .HasColumnName("usuarioasig")
+            .IsRequired(false);
 
         builder.Property(x => x.Estado)
             .HasColumnName("estado")
@@ -45,5 +49,11 @@ public class FacturaConfiguration
         builder.HasOne(x => x.Usuario)
             .WithMany()
             .HasForeignKey(x => x.UsuarioId);
+        
+        builder.HasOne(x => x.UsuarioAsigNavigation)
+            .WithMany()
+            .HasForeignKey(x => x.UsuarioAsig)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
     }
 }

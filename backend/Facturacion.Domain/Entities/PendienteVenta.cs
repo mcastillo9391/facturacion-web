@@ -8,6 +8,8 @@ public class PendienteVenta
 
     public int UsuarioId { get; set; }
 
+    public int? UsuarioAsig { get; set; }
+
     public DateTime FechaCreacion { get; set; }
 
     public DateTime? FechaActualizacion { get; set; }
@@ -19,6 +21,8 @@ public class PendienteVenta
     public Cliente Cliente { get; set; } = null!;
 
     public Usuario Usuario { get; set; } = null!;
+
+    public Usuario? UsuarioAsigNavigation { get; set; }
 
     public ICollection<DetallePendienteVenta> Detalles
     {

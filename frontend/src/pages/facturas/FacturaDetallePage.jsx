@@ -77,10 +77,10 @@ async () => {
 
   } catch (error) {
 
-    alert(
-      error?.response?.data?.message ||
-      "Error registrando pago"
-    );
+     alert(
+        error.response?.data?.mensaje ||
+        "Ocurrió un error"
+      );
   }
 };
 

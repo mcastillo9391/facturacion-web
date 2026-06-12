@@ -8,6 +8,9 @@ import {
   obtenerRoles,
 } from "../../services/usuarioService";
 
+import LoadingOverlay
+  from "../../components/LoadingOverlay";
+
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
 
@@ -94,11 +97,18 @@ export default function UsuariosPage() {
 
     setMostrarFormulario(true);
   };
-
+  
+  const [Agregando, setAgregando] =
+    useState(false);
   const guardar = async (e) => {
     e.preventDefault();
 
     try {
+      // Validando para efecto de espera
+      if (Agregando) return;
+      //Activando modo espera
+      setAgregando(true);
+
       if (editando) {
         await actualizarUsuario(
           editando,
@@ -140,9 +150,15 @@ export default function UsuariosPage() {
       alert(
         "Error al guardar usuario"
       );
+    } finally {
+      // Finalizando modo espera
+      setAgregando(false);
+
     }
   };
-
+  
+  const [Desactivando, setDesactivando] =
+    useState(false);
   const desactivar = async (id) => {
     if (
       !window.confirm(
@@ -153,6 +169,12 @@ export default function UsuariosPage() {
     }
 
     try {
+      // Validando para modo espera
+      if (Desactivando) return;
+      // Activando modo espera
+      setDesactivando(true);
+
+      // Desactivando...
       await desactivarUsuario(id);
 
       cargarDatos();
@@ -160,6 +182,10 @@ export default function UsuariosPage() {
       alert(
         "Error al desactivar usuario"
       );
+    } finally {
+
+      setDesactivando(false);
+
     }
   };
 
@@ -197,6 +223,17 @@ export default function UsuariosPage() {
 
   return (
     <div className="page-container">
+  
+      {Desactivando && (
+        <LoadingOverlay
+          mensaje="Desactivando usuario..."
+        />
+      )}
+      {Agregando && (
+        <LoadingOverlay
+          mensaje="Agregando usuario..."
+        />
+      )}
 
       {/* HERO */}
       <div className="page-header">

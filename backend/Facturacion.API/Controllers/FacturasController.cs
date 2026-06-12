@@ -1,5 +1,6 @@
 using Facturacion.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Facturacion.Application.DTOs.Facturas;
 
 namespace Facturacion.API.Controllers;
 
@@ -17,23 +18,28 @@ public class FacturasController
         _service = service;
     }
 
-    [HttpPost(
-        "generar/{pendienteVentaId}")]
+    [HttpPost("generar/{pendienteVentaId}")]
     public async Task<IActionResult>
         Generar(
-            int pendienteVentaId)
+            int pendienteVentaId,
+            [FromBody] GenerarFacturaDto? dto)
     {
+        // usuarioAsig: usuario seleccionado en el frontend.
+        // Si no se selecciona ninguno, fallback a 1 (igual que PendientesVentaController).
+        var usuarioAsig = dto?.UsuarioAsig ?? 1;
+
         var facturaId =
             await _service
                 .GenerarDesdePendienteAsync(
-                    pendienteVentaId);
+                    pendienteVentaId,
+                    usuarioAsig,
+                    dto?.UsuarioAsig);
 
         return Ok(new
         {
             FacturaId = facturaId
         });
     }
-
 
     [HttpGet]
     public async Task<IActionResult>

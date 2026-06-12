@@ -6,6 +6,9 @@ import {
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
 
+import LoadingOverlay
+  from "../../components/LoadingOverlay";
+
 import {
   obtenerEnvios,
   crearEnvio,
@@ -47,7 +50,9 @@ export default function EnviosPage() {
       valorEnvio: ""
     });
   };
-
+  
+  const [Agregando, setAgregando] =
+    useState(false);
   const guardar = async (e) => {
     e.preventDefault();
 
@@ -74,6 +79,10 @@ export default function EnviosPage() {
     };
 
     try {
+
+      if (Agregando) return;
+      setAgregando(true);
+
       if (modoEdicion) {
         await actualizarEnvio(
           envioSeleccionado.codigo,
@@ -90,6 +99,10 @@ export default function EnviosPage() {
       alert(
         "Ocurrió un error guardando el envío."
       );
+    } finally {
+
+      setAgregando(false);
+
     }
   };
 
@@ -137,7 +150,12 @@ export default function EnviosPage() {
 
   return (
     <div className="page-container">
-
+      
+      {Agregando && (
+        <LoadingOverlay
+          mensaje="Agregando envío..."
+        />
+      )}
       {/* HERO */}
       <div className="page-hero">
 

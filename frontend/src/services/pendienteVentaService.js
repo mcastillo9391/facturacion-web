@@ -45,3 +45,11 @@ export const cancelarPendiente =
       `/PendientesVenta/${id}/cancelar`
     );
   };
+
+export const actualizarUsuarioAsig =
+  async (id, usuarioAsig) => {
+    await api.put(
+      `/PendientesVenta/${id}/usuarioasig`,
+      { usuarioAsig: usuarioAsig ?? null }
+    );
+  };

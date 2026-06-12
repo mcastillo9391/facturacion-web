@@ -1,96 +1,149 @@
-using Facturacion.Application.DTOs.Dashboard;
-using Facturacion.Application.Interfaces.Repositories;
-using Facturacion.Application.Interfaces.Services;
+    using Facturacion.Application.DTOs.Dashboard;
+    using Facturacion.Application.Interfaces.Repositories;
+    using Facturacion.Application.Interfaces.Services;
 
-namespace Facturacion.Application.Services.Dashboard;
+    namespace Facturacion.Application.Services.Dashboard;
 
-public class DashboardService
-    : IDashboardService
-{
-    private readonly IFacturaRepository _facturaRepository;
-
-    private readonly IPagoRepository _pagoRepository;
-
-    private readonly IEnvioRepository _envioRepository;
-
-    private readonly IClienteRepository _clienteRepository;
-
-    private readonly IProductoRepository _productoRepository;
-
-    public DashboardService(
-        IFacturaRepository facturaRepository,
-        IPagoRepository pagoRepository,
-        IEnvioRepository envioRepository,
-        IClienteRepository clienteRepository,
-        IProductoRepository productoRepository)
+    public class DashboardService
+        : IDashboardService
     {
-        _facturaRepository = facturaRepository;
-        _pagoRepository = pagoRepository;
-        _envioRepository = envioRepository;
-        _clienteRepository = clienteRepository;
-        _productoRepository = productoRepository;
-    }
+        private readonly IFacturaRepository _facturaRepository;
 
-    public async Task<DashboardDto>
-        ObtenerResumenAsync()
-    {
-        var ventasTotales =
-            await _facturaRepository
-                .ObtenerVentasTotalesAsync();
+        private readonly IPagoRepository _pagoRepository;
 
-        var ventasMes =
-            await _facturaRepository
-                .ObtenerVentasMesActualAsync();
+        private readonly IEnvioRepository _envioRepository;
 
-        var recaudosHoy =
-            await _pagoRepository
-                .ObtenerPagosHoyAsync();
+        private readonly IUsuarioActualService _usuarioActual;
 
-        var recaudosMes =
-            await _pagoRepository
-                .ObtenerPagosMesActualAsync();
+        private readonly IClienteRepository _clienteRepository;
 
-        var gastosEnvioMes =
-            await _envioRepository
-                .ObtenerValorEnviosMesActualAsync();
-
-        var clientesActivos =
-            await _clienteRepository
-                .ObtenerClientesActivosAsync();
-
-        var productosActivos =
-            await _productoRepository
-                .ObtenerProductosActivosAsync();
-
-        var facturasPendientes =
-            await _facturaRepository
-                .ObtenerFacturasPendientesAsync();
-
-        var carteraPendiente =
-            await _facturaRepository
-                .ObtenerCarteraPendienteAsync();
-
-        return new DashboardDto
+        private readonly IProductoRepository _productoRepository;
+        
+        public DashboardService(
+            IFacturaRepository facturaRepository,
+            IPagoRepository pagoRepository,
+            IEnvioRepository envioRepository,
+            IClienteRepository clienteRepository,
+            IProductoRepository productoRepository,
+            IUsuarioActualService usuarioActual)
         {
-            
-            VentasMes = ventasMes,
+            _facturaRepository = facturaRepository;
+            _pagoRepository = pagoRepository;
+            _envioRepository = envioRepository;
+            _clienteRepository = clienteRepository;
+            _productoRepository = productoRepository;
+            _usuarioActual = usuarioActual;
+        }
 
-            RecaudosHoy = recaudosHoy,
+        public async Task<DashboardDto>
+            ObtenerResumenAsync()
+        {
+            if ((_usuarioActual.Rol ?? "")
+                .Trim()
+                .ToUpper() == "CONSULTA")
+            {
+                var facturasUsuario =
+                    await _facturaRepository
+                        .ObtenerPorUsuarioAsigAsync(
+                            _usuarioActual.UsuarioId);
 
-            RecaudosMes = recaudosMes,
+                var ventasMesUsuario = facturasUsuario
+                    .Where(x =>
+                        x.FechaGen.Month == DateTime.Now.Month &&
+                        x.FechaGen.Year == DateTime.Now.Year)
+                    .Sum(x => x.ValorFactura);
 
-            GastosEnvioMes = gastosEnvioMes,
+                var facturasPendientesUsuario = facturasUsuario
+                    .Count(x =>
+                        (x.Estado ?? "")
+                        .ToUpper() == "PENDIENTE");
 
-            CarteraPendiente = carteraPendiente,
+                var carteraPendienteUsuario = facturasUsuario
+                    .Where(x =>
+                        x.ValorFactura >
+                        (x.ValorAbonado ?? 0))
+                    .Sum(x =>
+                        x.ValorFactura -
+                        (x.ValorAbonado ?? 0));
 
-            FacturasPendientes =
-                facturasPendientes,
+                return new DashboardDto
+                {
+                    VentasMes = ventasMesUsuario,
 
-            ClientesActivos =
-                clientesActivos,
+                    RecaudosHoy = 0,
 
-            ProductosActivos =
-                productosActivos
-        };
+                    RecaudosMes = 0,
+
+                    GastosEnvioMes = 0,
+
+                    CarteraPendiente =
+                        carteraPendienteUsuario,
+
+                    FacturasPendientes =
+                        facturasPendientesUsuario,
+
+                    ClientesActivos = 0,
+
+                    ProductosActivos = 0
+                };
+            }
+            var ventasTotales =
+                await _facturaRepository
+                    .ObtenerVentasTotalesAsync();
+
+            var ventasMes =
+                await _facturaRepository
+                    .ObtenerVentasMesActualAsync();
+
+            var recaudosHoy =
+                await _pagoRepository
+                    .ObtenerPagosHoyAsync();
+
+            var recaudosMes =
+                await _pagoRepository
+                    .ObtenerPagosMesActualAsync();
+
+            var gastosEnvioMes =
+                await _envioRepository
+                    .ObtenerValorEnviosMesActualAsync();
+
+            var clientesActivos =
+                await _clienteRepository
+                    .ObtenerClientesActivosAsync();
+
+            var productosActivos =
+                await _productoRepository
+                    .ObtenerProductosActivosAsync();
+
+            var facturasPendientes =
+                await _facturaRepository
+                    .ObtenerFacturasPendientesAsync();
+
+            var carteraPendiente =
+                await _facturaRepository
+                    .ObtenerCarteraPendienteAsync();
+
+            return new DashboardDto
+            {
+                
+                VentasMes = ventasMes,
+
+                RecaudosHoy = recaudosHoy,
+
+                RecaudosMes = recaudosMes,
+
+                GastosEnvioMes = gastosEnvioMes,
+
+                CarteraPendiente = carteraPendiente,
+
+                FacturasPendientes =
+                    facturasPendientes,
+
+                ClientesActivos =
+                    clientesActivos,
+
+                ProductosActivos =
+                    productosActivos
+            };
+        }
     }
-}

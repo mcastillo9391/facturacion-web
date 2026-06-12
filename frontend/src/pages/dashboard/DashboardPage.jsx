@@ -7,9 +7,13 @@ import {
 obtenerDashboard
 } from "../../services/dashboardService";
 import "./DashboardPage.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function DashboardPage() {
+const { user } = useAuth();
 
+const esConsulta =
+  user?.rol === "Consulta";
 const [datos,
 setDatos] =
 useState(null);
@@ -70,16 +74,17 @@ return (
           datos.ventasMes
         ).toLocaleString()}</span>
     </div>
-
-    <div className="kpi-card">
-      <h3>🏦 Recaudos Hoy</h3>
-      <span>${Number(datos.recaudosHoy).toLocaleString()}</span>
-    </div>
-
+    {!esConsulta && (
+      <div className="kpi-card">
+        <h3>🏦 Recaudos Hoy</h3>
+        <span>${Number(datos.recaudosHoy).toLocaleString()}</span>
+      </div>
+    )}
     <div className="kpi-card">
       <h3>📊 Cartera</h3>
       <span>${Number(datos.carteraPendiente).toLocaleString()}</span>
     </div>
+    
 
   </div>
   

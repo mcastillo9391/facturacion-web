@@ -9,12 +9,16 @@ public class CarteraService
 {
     private readonly IFacturaRepository
         _facturaRepository;
+    
+    private readonly IUsuarioActualService _usuarioActual;
 
+    
     public CarteraService(
-        IFacturaRepository facturaRepository)
+        IFacturaRepository facturaRepository,
+        IUsuarioActualService usuarioActual)
     {
-        _facturaRepository =
-            facturaRepository;
+        _facturaRepository = facturaRepository;
+        _usuarioActual = usuarioActual;
     }
 
     public async Task<List<CarteraDto>>
@@ -24,6 +28,16 @@ public class CarteraService
             await _facturaRepository
                 .ObtenerFacturasConSaldoPendienteAsync();
 
+        if ((_usuarioActual.Rol ?? "")
+            .Trim()
+            .ToUpper() == "CONSULTA")
+        {
+            facturas = facturas
+                .Where(x =>
+                    x.UsuarioAsig ==
+                    _usuarioActual.UsuarioId)
+                .ToList();
+        }
         return facturas
             .Select(x =>
                 new CarteraDto

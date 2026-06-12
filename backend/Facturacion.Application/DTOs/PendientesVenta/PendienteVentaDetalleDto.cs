@@ -10,6 +10,8 @@ public class PendienteVentaDetalleDto
 
     public string Estado { get; set; } = string.Empty;
 
+    public int? UsuarioAsig { get; set; }
+
     public decimal Total { get; set; }
 
     public List<DetallePendienteVentaDto>

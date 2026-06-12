@@ -6,6 +6,9 @@ useState
 import { usePagination } from "../../hooks/usePagination";
 import Pagination from "../../components/Pagination";
 
+import LoadingOverlay
+  from "../../components/LoadingOverlay";
+
 import {
 obtenerProductos,
 crearProducto,
@@ -85,12 +88,15 @@ producto.valorVenta
   setMostrarFormulario(true);
 };
 
+const [Agregando, setAgregando] =
+  useState(false);
 const guardar =
 async (e) => {
-e.preventDefault();
+  e.preventDefault();
 
   try {
-
+    if (Agregando) return;
+    setAgregando(true);
     if (editando) {
 
       await actualizarProducto(
@@ -121,12 +127,21 @@ e.preventDefault();
     alert(
       "Error al guardar producto"
     );
+  } finally {
+
+    setAgregando(false);
+
   }
 };
 
+const [Desactivando, setDesactivando] =
+  useState(false);
 const desactivar =
 async (id) => {
+  try{
 
+    if (Desactivando) return;
+    setDesactivando(true);
   if (
     !window.confirm(
       "¿Desea desactivar este producto?"
@@ -135,9 +150,18 @@ async (id) => {
     return;
   }
 
-  await eliminarProducto(id);
+    await eliminarProducto(id);
 
-  cargarProductos();
+    cargarProductos();
+  } catch {
+    alert(
+      "Error desactivando el producto"
+    );
+  } finally {
+
+    setDesactivando(false);
+
+  }
 };
 
 const productosFiltrados =
@@ -160,6 +184,16 @@ const {
 
 return ( <div className="page-container">
 
+  {Desactivando && (
+    <LoadingOverlay
+      mensaje="Desactivando producto..."
+    />
+  )}
+  {Agregando && (
+    <LoadingOverlay
+      mensaje="Agregando producto..."
+    />
+  )}
   <div className="page-hero">
     <div>
       <h1>Productos</h1>

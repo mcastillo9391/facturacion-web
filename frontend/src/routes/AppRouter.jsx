@@ -84,6 +84,7 @@ export default function AppRouter() {
                 roles={[
                   "Administrador",
                   "Vendedor",
+                  "Consulta",
                 ]}
               >
                 <FacturasPage />
@@ -98,6 +99,7 @@ export default function AppRouter() {
                 roles={[
                   "Administrador",
                   "Vendedor",
+                  "Consulta",
                 ]}
               >
                 <FacturaDetallePage />
