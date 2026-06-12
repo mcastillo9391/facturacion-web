@@ -523,4 +523,66 @@ tr:hover {
     width: 100%;
   }
 
+  .producto-form {
+  display: grid;
+  grid-template-columns:
+    minmax(200px, 2fr)
+    minmax(80px, 1fr)
+    minmax(80px, 1fr)
+    auto;
+
+  gap: 12px;
+  width: 100%;
+}
+
+.producto-form select,
+.producto-form input {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .producto-form {
+    grid-template-columns: 1fr;
+  }
+}
+.cliente-selector {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.cliente-selector input {
+  width: 100%;
+}
+
+.cliente-lista {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  max-height: 250px;
+  overflow-y: auto;
+
+  background: #1e293b;
+  color: #fff;
+
+  border: 1px solid #334155;
+  border-radius: 8px;
+
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+}
+
+.cliente-item {
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #334155;
+}
+
+.cliente-item:hover {
+  background: #334155;
+}
+
 }

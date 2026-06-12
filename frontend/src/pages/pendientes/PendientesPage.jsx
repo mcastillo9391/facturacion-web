@@ -7,6 +7,8 @@ import Pagination from "../../components/Pagination";
 import LoadingOverlay
   from "../../components/LoadingOverlay";
 
+
+
 import {
   obtenerPendientes,
   crearPendiente,
@@ -18,6 +20,8 @@ import {
 import { generarFactura } from "../../services/facturaService";
 
 export default function PendientesPage() {
+  const [clienteBusqueda, setClienteBusqueda] = useState("");
+  const [mostrarClientes, setMostrarClientes] = useState(false);
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
@@ -59,7 +63,11 @@ export default function PendientesPage() {
 
     setPendientes(pendientesData);
   };
-  
+  const clientesFiltrados = clientes.filter((c) =>
+    c.nombre
+      ?.toLowerCase()
+      .includes(clienteBusqueda.toLowerCase())
+  );
   const [getPend, setGetPend] =
   useState(false);
   const cargarPendiente = async (id) => {
@@ -347,20 +355,56 @@ export default function PendientesPage() {
       </div>
 
       <div style={{ marginBottom: 20 }}>
-        <select
-          value={clienteId}
-          onChange={(e) => setClienteId(e.target.value)}
-        >
-          <option value="">Seleccione cliente</option>
-          {clientes.map((c) => (
-            <option key={c.idCli} value={c.idCli}>
-              {c.nombre}
-            </option>
-          ))}
-        </select>
+        <div className="cliente-selector">
+          <input
+            type="text"
+            placeholder="Buscar cliente..."
+            value={clienteBusqueda}
+            onChange={(e) => {
+              setClienteBusqueda(e.target.value);
+              setMostrarClientes(true);
+            }}
+            onFocus={() => setMostrarClientes(true)}
+          />
 
-        <button onClick={crearNuevoPendiente}>Nuevo Pendiente</button>
-      </div>
+          {mostrarClientes && clienteBusqueda && (
+            <div className="cliente-lista">
+              {clientesFiltrados.slice(0, 20).map((c) => (
+                <div
+                  key={c.idCli}
+                  className="cliente-item"
+                  onClick={() => {
+                    setClienteId(c.idCli);
+                    setClienteBusqueda(c.nombre);
+                    setMostrarClientes(false);
+                  }}
+                >
+                  {c.nombre}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {clienteId && (
+          <small
+            style={{
+              display: "block",
+              marginTop: "8px",
+              color: "#64748b"
+            }}
+          >
+            Cliente seleccionado: {clienteBusqueda}
+          </small>
+        )}
+
+        <button
+          style={{ marginTop: "10px" }}
+          onClick={crearNuevoPendiente}
+        >
+          Nuevo Pendiente
+        </button>
+      </div>    
 
       <h4>Filtrar por estado:</h4>
           <div className="status-grid">
@@ -506,9 +550,10 @@ export default function PendientesPage() {
             style={{
               display: "grid",
               gridTemplateColumns:
-                "2fr 1fr 1fr auto",
+                "repeat(auto-fit, minmax(180px, 1fr))",
               gap: "12px",
-              marginBottom: "20px"
+              marginBottom: "20px",
+              width: "100%"
             }}
           >
             <select
@@ -537,41 +582,43 @@ export default function PendientesPage() {
 
             <button onClick={agregarProducto}>Agregar Producto</button>
           </div>
+          <div className="table-container">
+            <div className="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Valor</th>
+                    <th>Descuento</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Valor</th>
-                <th>Descuento</th>
-                <th>Total</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pendiente.detalles.map((d) => (
-                <tr key={d.detallePendienteVentaId}>
-                  <td>{d.producto}</td>
-                  <td>{d.cantidad}</td>
-                  <td>{d.valorUnitario}</td>
-                  <td>{d.descuento}</td>
-                  <td>{d.total}</td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        eliminarProducto(d.detallePendienteVentaId)
-                      }
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
+                <tbody>
+                  {pendiente.detalles.map((d) => (
+                    <tr key={d.detallePendienteVentaId}>
+                      <td>{d.producto}</td>
+                      <td>{d.cantidad}</td>
+                      <td>{d.valorUnitario}</td>
+                      <td>{d.descuento}</td>
+                      <td>{d.total}</td>
+                      <td>
+                        <button
+                          onClick={() =>
+                            eliminarProducto(d.detallePendienteVentaId)
+                          }
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>      
           <h3>Total: {pendiente.total}</h3>
         </div>
       )}
