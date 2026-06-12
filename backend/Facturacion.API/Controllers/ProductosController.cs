@@ -43,7 +43,7 @@ public class ProductosController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador,Vendedor")]
     public async Task<IActionResult> Crear(
         [FromBody] CrearProductoDto dto)
     {
@@ -58,7 +58,7 @@ public class ProductosController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador,Vendedor")]
     public async Task<IActionResult> Actualizar(
         int id,
         [FromBody] ActualizarProductoDto dto)
@@ -74,7 +74,7 @@ public class ProductosController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Administrador,Vendedor")]
     public async Task<IActionResult> Desactivar(
         int id)
     {

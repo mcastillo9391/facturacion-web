@@ -59,11 +59,32 @@ export default function PendientesPage() {
 
     setPendientes(pendientesData);
   };
-
+  
+  const [getPend, setGetPend] =
+  useState(false);
   const cargarPendiente = async (id) => {
-    const data = await obtenerPendiente(id);
-    setPendiente(data);
-    setPendienteId(id);
+    try{
+      // Validando si activar modo espera
+      if (getPend) return;
+      // Establecer modo espera
+      setGetPend(true);
+      const data = await obtenerPendiente(id);
+      setPendiente(data);
+      setPendienteId(id);
+    } catch (error) {
+        const data = error.response?.data;
+
+        const mensaje = data
+            ?.split("\n")[0]
+            ?.replace("System.Exception:", "")
+            ?.trim();
+
+        alert(mensaje || "Ocurrió un error"); 
+    } finally {
+
+      setGetPend(false);
+
+    }
   };
 
   const contarPorEstado = (estado) => {
@@ -97,15 +118,37 @@ export default function PendientesPage() {
     setPage(1);
     }, [estadoFiltro]);
 
+    
+  const [newPend, setNewPend] =
+  useState(false);
   const crearNuevoPendiente = async () => {
     if (!clienteId) return alert("Seleccione un cliente");
+    try{
+      // Validando si activar modo espera
+      if (newPend) return;
+      // Establecer modo espera
+      setNewPend(true);
 
-    const result = await crearPendiente({
-      clienteId: parseInt(clienteId),
-    });
+      const result = await crearPendiente({
+        clienteId: parseInt(clienteId),
+      });
 
-    await cargarPendiente(result.pendienteVentaId);
-    await cargarDatos();
+      await cargarPendiente(result.pendienteVentaId);
+      await cargarDatos();
+    } catch (error) {
+        const data = error.response?.data;
+
+        const mensaje = data
+            ?.split("\n")[0]
+            ?.replace("System.Exception:", "")
+            ?.trim();
+
+        alert(mensaje || "Ocurrió un error"); 
+    } finally {
+
+      setNewPend(false);
+
+    }
   };
 
   const [Agregando, setAgregando] =
@@ -114,19 +157,19 @@ export default function PendientesPage() {
     if (!productoId) return alert("Seleccione un producto");
       if (Agregando) return;
       try {
-            setAgregando(true);
-            await agregarProductoPendiente(pendienteId, {
-                productoId: parseInt(productoId),
-                cantidad: parseInt(cantidad),
-                descuento: parseFloat(descuento),
-            });
+        setAgregando(true);
+        await agregarProductoPendiente(pendienteId, {
+            productoId: parseInt(productoId),
+            cantidad: parseInt(cantidad),
+            descuento: parseFloat(descuento),
+        });
 
-            await cargarPendiente(pendienteId);
-            await cargarDatos();
+        await cargarPendiente(pendienteId);
+        await cargarDatos();
 
-            setProductoId("");
-            setCantidad(1);
-            setDescuento(0);
+        setProductoId("");
+        setCantidad(1);
+        setDescuento(0);
     } catch (error) {
         const data = error.response?.data;
 
@@ -142,26 +185,36 @@ export default function PendientesPage() {
 
     }
   };
-
+  const [delPend, setDelPend] =
+  useState(false);
   const eliminarProducto = async (detalleId) => {
     if (!window.confirm("¿Eliminar producto?")) return;
-        try {
-            await eliminarProductoPendiente(detalleId);
+      try {
+        // Validando si activar modo espera
+        if (delPend) return;
+        // Establecer modo espera
+        setDelPend(true);
 
-            await cargarPendiente(pendienteId);
-            await cargarDatos();
+        await eliminarProductoPendiente(detalleId);
 
-            alert("Producto eliminado correctamente");
-        } catch (error) {
-            const data = error.response?.data;
+        await cargarPendiente(pendienteId);
+        await cargarDatos();
 
-            const mensaje = data
-                ?.split("\n")[0]
-                ?.replace("System.Exception:", "")
-                ?.trim();
+        alert("Producto eliminado correctamente");
+    } catch (error) {
+        const data = error.response?.data;
 
-            alert(mensaje || "Ocurrió un error");
-        }
+        const mensaje = data
+            ?.split("\n")[0]
+            ?.replace("System.Exception:", "")
+            ?.trim();
+
+        alert(mensaje || "Ocurrió un error");
+      } finally {
+
+        setDelPend(false);
+
+      }
     };
 
   const [facturando, setFacturando] =
@@ -267,6 +320,21 @@ export default function PendientesPage() {
       {cancelando && (
         <LoadingOverlay
           mensaje="Cancelando pendiente..."
+        />
+      )}
+      {delPend && (
+        <LoadingOverlay
+          mensaje="Eliminando producto..."
+        />
+      )}
+      {newPend && (
+        <LoadingOverlay
+          mensaje="Agregando pendiente..."
+        />
+      )}
+      {getPend && (
+        <LoadingOverlay
+          mensaje="Obteniendo pendiente..."
         />
       )}
       <div className="page-hero">

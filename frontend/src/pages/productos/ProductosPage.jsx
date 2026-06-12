@@ -142,13 +142,13 @@ async (id) => {
 
     if (Desactivando) return;
     setDesactivando(true);
-  if (
-    !window.confirm(
-      "¿Desea desactivar este producto?"
-    )
-  ) {
-    return;
-  }
+    if (
+      !window.confirm(
+        "¿Desea desactivar este producto?"
+      )
+    ) {
+      return;
+    }
 
     await eliminarProducto(id);
 
