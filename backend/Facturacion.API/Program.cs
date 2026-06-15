@@ -14,6 +14,8 @@ using Facturacion.Application.Services.Recaudo;
 using Facturacion.Application.Services.Gastos;
 using Facturacion.Application.Services.Auth;
 using Facturacion.Application.Services.Dashboard;
+using Facturacion.Application.Services.Chat;
+using Facturacion.Application.Services.Notificaciones;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,6 +132,20 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<
     IUsuarioActualService,
     UsuarioActualService>();
+
+// ChatBot
+builder.Services.AddScoped<
+    IChatService,
+    ChatService>();
+
+// Notificaciones
+builder.Services.AddScoped<
+    INotificacionService,
+    NotificacionService>();
+
+builder.Services.AddScoped<
+    INotificacionRepository,
+    NotificacionRepository>();
 
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"];

@@ -2,7 +2,7 @@ using Facturacion.Application.Interfaces.Repositories;
 using Facturacion.Application.Interfaces.Services;
 using Facturacion.Domain.Entities;
 using Facturacion.Application.DTOs.Facturas;
-
+using Facturacion.Application.Services.Chat;
 
 namespace Facturacion.Application.Services.Ventas;
 
@@ -159,16 +159,27 @@ public class FacturaService : IFacturaService
 
         return facturas
             .Select(f => new FacturaDto
-            {              
+            {
                 Codigo = f.Codigo,
+
+                ClienteId = f.IdCli,
+
                 Cliente = f.Cliente.Nombre,
 
                 UsuarioId = f.UsuarioId ?? 0,
+
                 UsuarioAsig = f.UsuarioAsig,
 
                 FechaGen = f.FechaGen,
+
                 ValorFactura = f.ValorFactura,
+
                 ValorAbonado = f.ValorAbonado ?? 0,
+
+                Saldo =
+                    f.ValorFactura -
+                    (f.ValorAbonado ?? 0),
+
                 Estado = f.Estado ?? ""
             })
             .ToList();

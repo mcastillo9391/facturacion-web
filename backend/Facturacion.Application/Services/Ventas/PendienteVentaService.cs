@@ -9,6 +9,8 @@ public class PendienteVentaService : IPendienteVentaService
 {
     private readonly IPendienteVentaRepository
         _pendienteVentaRepository;
+    
+    private readonly IUsuarioActualService _usuarioActual;
 
     private readonly IDetallePendienteVentaRepository
         _detalleRepository;
@@ -19,11 +21,16 @@ public class PendienteVentaService : IPendienteVentaService
     private readonly IClienteRepository
         _clienteRepository;
 
+    
+    private readonly INotificacionService _notificacionService;
+
     public PendienteVentaService(
         IPendienteVentaRepository pendienteVentaRepository,
         IDetallePendienteVentaRepository detalleRepository,
         IProductoRepository productoRepository,
-        IClienteRepository clienteRepository)
+        IClienteRepository clienteRepository,
+        IUsuarioActualService usuarioActual,
+        INotificacionService notificacionService)
     {
         _pendienteVentaRepository =
             pendienteVentaRepository;
@@ -36,6 +43,10 @@ public class PendienteVentaService : IPendienteVentaService
 
         _clienteRepository =
             clienteRepository;
+
+        _usuarioActual = usuarioActual;
+
+        _notificacionService = notificacionService;
     }
 
     public async Task<int> CrearAsync(
@@ -73,6 +84,13 @@ public class PendienteVentaService : IPendienteVentaService
 
         await _pendienteVentaRepository
             .GuardarCambiosAsync();
+
+        await _notificacionService
+            .CrearAsync(
+                pendiente.UsuarioId,
+                "Nuevo pendiente asignado",
+                $"Se te asignó el pendiente #{pendiente.PendienteVentaId}."
+            );
 
         return pendiente.PendienteVentaId;
     }
@@ -269,6 +287,16 @@ public class PendienteVentaService : IPendienteVentaService
             await _pendienteVentaRepository
                 .ObtenerTodosAsync();
 
+        if ((_usuarioActual.Rol ?? "")
+            .Trim()
+            .ToUpper() == "CONSULTA")
+        {
+            pendientes = pendientes
+                .Where(p =>
+                    p.UsuarioAsig ==
+                    _usuarioActual.UsuarioId)
+                .ToList();
+        }
         return pendientes
             .Select(x =>
                 new PendienteVentaDto

@@ -19,6 +19,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Cliente> Clientes => Set<Cliente>();
 
+    public DbSet<Notificacion> Notificaciones { get; set; }
+
     public DbSet<PendienteVenta> PendientesVenta
         => Set<PendienteVenta>();
 
